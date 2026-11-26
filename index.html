@@ -518,6 +518,10 @@ details.tbl button{background:none;border:0;color:var(--warn);font-size:12px;fon
 .whrd{font-size:13px;color:var(--muted)}
 .evod{margin:2px 0 0;font-size:13px;color:var(--muted);line-height:1.4}
 .evod span{display:block;opacity:.85}
+/* v26: casa / gym */
+.pl26{display:flex;flex-direction:column;gap:8px}
+.pl26 .seg button{flex:1}
+.pl26r{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center;font-size:12px;color:var(--muted)}
 /* v22: comida */
 .pet{flex-wrap:wrap}
 .bellies{flex-basis:100%;display:flex;flex-direction:column;gap:6px;margin-top:4px}
@@ -1140,7 +1144,8 @@ function swimSess(k){const r=S.days[k]||{};const lv=SWIM[r.lvl]?r.lvl:SWIM[S.cfg
 function actMin(r){return ((r&&r.acts)||[]).reduce((a,x)=>a+(+x.min||0),0);}
 function actPts(r){return ((r&&r.acts)||[]).reduce((a,x)=>a+(+x.min||0)*[.75,1,1.25][((x.int||2)-1)%3],0);}
 const sportName=a=>a.t==="otro"&&a.n?a.n:((SPORTS.find(x=>x[0]===a.t)||[0,"Otro"])[1]);
-function baseSess(k){const id=planId(k);if(id==="N")return swimSess(k);
+function baseSess(k){const o26=PL26;PL26=placeOf26(k);try{return baseSess0(k);}finally{PL26=o26;}}
+function baseSess0(k){const id=planId(k);if(id==="N")return swimSess(k);
   if(id==="X"){const ac=(S.days[k]||{}).acts||[];return ac.length?Object.assign({},SESS.X,{name:"Deporte · "+[...new Set(ac.map(sportName))].join(", ")}):SESS.X;}
   let s0=SESS[id]||SESS[DEFW[fromKey(k).getDay()]];if(!hasG("bike")){if(s0.id==="S")s0=SESS.W;else if(s0.id==="H")s0=SESS.Y;}return adaptSess(s0);}
 function isRest(k){return baseSess(k).kind==="descanso";}
@@ -1197,7 +1202,7 @@ function missionFor(k){
 }
 
 /* ---------- todo el juego se deriva del registro (nada se acumula a mano) ---------- */
-function compute(){
+function compute(){PLC26={casa:0,gym:0,both:false,wk:{}};
   let xp=0,sets=0,sessions=0,prs=0,vprs=0,circ=0,hiit12=0,missions=0,used=0,rpes=0,strN=0,strFull=0,warmN=0,warmFull=0,modeDays=0,express=0,mini=0,swapSteps=0,stepDays=0,kept=0,actTot=0,actCoins=0,swims=0,bands=0;const sportSet=new Set();
   const MS={};const ms=k=>{const y=k.slice(0,7);return MS[y]=MS[y]||{sessions:0,strFull:0,warmFull:0,hiit12:0,circ:0,prs:0,missions:0,stepDays:0,weigh:0,maxStreak:0,rpes:0,swimM:0,actMin:0,actDays:0};};
   const best={},bestVol={},weeks={},dmg={},mast={},chests=[];
@@ -1217,7 +1222,7 @@ function compute(){
     const wd=Object.keys(r.warm||{}).filter(id=>r.warm[id]&&EX[id]);wd.forEach(id=>{mast[id]=(mast[id]||0)+1;});warmN+=wd.length;xp+=wd.length*2;
     if(ss.warm&&ss.warm.length&&ss.warm.every(id=>r.warm&&r.warm[id])){warmFull++;M.warmFull++;xp+=10;hit+=2;}
     if(r.done&&ss.kind!=="descanso"&&ss.mode){modeDays++;M.sessions++;if(ss.mode==="pasos"){swapSteps++;xp+=30;}else if(ss.mode==="mini"){mini++;xp+=15;}else{express++;xp+=25;}}
-    else if(r.done&&ss.kind!=="descanso"){sessions++;M.sessions++;xp+=50;weeks[mon]=(weeks[mon]||0)+1;if(ss.kind==="circuito"&&ss.id!=="Y"){circ++;M.circ++;}if(ss.id==="N")swims++;if(ss.id==="G")bands++;chests.push({id:"s:"+k,type:"normal",src:ss.name+" · "+fromKey(k).getDate()+"/"+(fromKey(k).getMonth()+1)});}
+    else if(r.done&&ss.kind!=="descanso"){sessions++;if(ss.kind==="fuerza"||ss.kind==="circuito"){const p26=placeOf26(k);PLC26[p26]++;const w26=PLC26.wk[mon]=PLC26.wk[mon]||{};w26[p26]=1;if(w26.casa&&w26.gym)PLC26.both=true;}M.sessions++;xp+=50;weeks[mon]=(weeks[mon]||0)+1;if(ss.kind==="circuito"&&ss.id!=="Y"){circ++;M.circ++;}if(ss.id==="N")swims++;if(ss.id==="G")bands++;chests.push({id:"s:"+k,type:"normal",src:ss.name+" · "+fromKey(k).getDate()+"/"+(fromKey(k).getMonth()+1)});}
     {const am=actMin(r);if(am){M.actMin+=am;M.actDays++;}if(ss.kind==="natacion")for(const [id,,t] of ss.items)M.swimM+=(parseInt(t)||0)*cnt((r.sets||{})[id]);}
     if(r.freeze)used++;
     const apx=actPts(r);if(apx>0){xp+=Math.min(60,Math.round(apx/2));actCoins+=Math.min(30,Math.round(apx/4));hit+=Math.min(15,Math.round(apx/6));actTot+=actMin(r);(r.acts||[]).forEach(a=>sportSet.add(a.t==="otro"?"o:"+(a.n||"").toLowerCase():a.t));}
@@ -1275,7 +1280,7 @@ function compute(){
   const coins=sets*2+sessions*20+missions*15+medalPts*10+bossMoney+chestCoins+weighIns*10+rpes*5+plans.length*200+coop.length*50+strN+strFull*5+warmFull*5+modeDays*10+stepDays*3+seasonN*50+actCoins+rescues*20+PAC.coin+DG.coin+XP21.coin+(T.has('pulmon')?AR:0)+(T.has('botin')?Math.round(bossMoney/4):0)-spent;
   const pending=chests.filter(c=>!S.opened[c.id]);
   const items=[...owned].filter(id=>itemById(id)&&itemById(id).price!==0).length;
-  return {actTot,sports:sportSet.size,swims,bands,warmN,warmFull,modeDays,express,mini,swapSteps,stepDays,kept,MS,maxStreak,seasonN,seasonAll,strN,strFull,vprs,rpes,cyc,plans,weighIns,kgLost,cmLost,w0,c0,coop,xp,sets,sessions,prs,circ,hiit12,missions,fullWeeks,bosses,dmg,streak,L,best,mast,rank,medalPts,gold,coins,pending,owned,items,freezes:chestFreeze+boughtFreeze-used+DG.frz+(T.has('comodin')?1:0),rescues,pets:{xp:PXP,dmg:PAC.dm,xpB:PAC.xp,coin:PAC.coin},negToday:NEG[TK]||(S.days[TK]?null:neglectAt(LH,TK,10)),body:body14(),
+  return {pl26:PLC26,actTot,sports:sportSet.size,swims,bands,warmN,warmFull,modeDays,express,mini,swapSteps,stepDays,kept,MS,maxStreak,seasonN,seasonAll,strN,strFull,vprs,rpes,cyc,plans,weighIns,kgLost,cmLost,w0,c0,coop,xp,sets,sessions,prs,circ,hiit12,missions,fullWeeks,bosses,dmg,streak,L,best,mast,rank,medalPts,gold,coins,pending,owned,items,freezes:chestFreeze+boughtFreeze-used+DG.frz+(T.has('comodin')?1:0),rescues,pets:{xp:PXP,dmg:PAC.dm,xpB:PAC.xp,coin:PAC.coin},negToday:NEG[TK]||(S.days[TK]?null:neglectAt(LH,TK,10)),body:body14(),
     attr:{F:AF+prs*5,R:AR+Math.round(actTot/5)+stepDays*2,M:AM+strN+warmN,C:kept*3+maxStreak*2+weighIns*2}};
 }
 const BADGES=[
@@ -1933,7 +1938,7 @@ function propSvg(type,w){
   if(type==="band")return `<g class="prop"><rect x="${x-3.5}" y="${y-1.6}" width="7" height="3.2" rx="1.4"/></g>`;
   return "";
 }
-function sceneSvg(sc){
+function sceneSvg(sc){const s26=scene26Svg(sc);if(s26)return s26;
   if(sc==="wall")return `<rect class="obj" x="87" y="0" width="8" height="95" rx="1.5"/>`;
   if(sc==="wallL")return `<rect class="obj" x="20" y="0" width="8" height="95" rx="1.5"/>`;
   if(sc==="step")return `<rect class="obj" x="58" y="82" width="26" height="13" rx="1.5"/>`;
@@ -2301,6 +2306,7 @@ function scene3(ex,t,lk){
   const sc=ex.scene;
   if(sc==="wall")R2(87,0,8,95,14);if(sc==="wallL")R2(20,0,8,95,14);if(sc==="step")R2(58,82,26,13,11);
   if(sc==="bench"){const bn=X.bench||[56,30,0,7];R2(bn[0],74,bn[1],5,bn[3],0,bn[2]);for(const z of [-1,1]){R2(bn[0]+4,79,3,16,1.2,0,bn[2]+z*(bn[3]-2));R2(bn[0]+bn[1]-6,79,3,16,1.2,0,bn[2]+z*(bn[3]-2));}}
+  gym3_26({sc,ex,R2,T,E,hands,feet,mid,Wp});
   if(sc==="box")R2(10,72,24,23,11);if(sc==="lowbox")R2(4,78,20,17,10);
   if(sc==="pull"){const X=mid[0];T([X,101,-19],[X,101,19],.9,.9,C3.st);for(const z of [-19,19])T([X,0,z],[X,101,z],1.2,1.2,C3.o);}
   return {P,body};}
@@ -2346,7 +2352,7 @@ function figure(ex,t,lk){
   const st=lk.prop?`--prop:${lk.prop};`:"";
   return `<line class="ground" x1="-4" y1="95" x2="104" y2="95"/>${sceneSvg(ex.scene)}<g style="${st}">${person(p,lk,{front:ex.front,prop:ex.prop})}${bandSvg(ex,p)}</g>`;
 }
-const FIG_STYLE=`<style>.ground{stroke:var(--line);stroke-width:1.2}.obj{fill:var(--surface2);stroke:var(--muted);stroke-width:.8}.prop{fill:var(--prop);stroke:${OUT};stroke-width:.6}.bandl{stroke:#E8487A;stroke-width:1.7;stroke-linecap:round}</style>`;
+const FIG_STYLE=`<style>.ground{stroke:var(--line);stroke-width:1.2}.obj{fill:var(--surface2);stroke:var(--muted);stroke-width:.8}.prop{fill:var(--prop);stroke:${OUT};stroke-width:.6}.bandl{stroke:#E8487A;stroke-width:1.7;stroke-linecap:round}.cablel{stroke:#8B95A3;stroke-width:.9;stroke-linecap:round}.pulley{fill:#5B6573}.sled{stroke:#5B6573;stroke-width:2.6;stroke-linecap:round}.pad26{fill:#3A3F47}</style>`;
 const AV={A:P({e:[61,30],w:[61,17]}),B:P({e:[61,30],w:[61,17]})};
 let auraN=0;
 function avatarSvg(over,label){const lk=lookOf(over);const id="aura"+(++auraN);const aura=lk.build>=4?`<defs><radialGradient id="${id}"><stop offset="0" stop-color="#FFD25A" stop-opacity=".6"/><stop offset="1" stop-color="#FFD25A" stop-opacity="0"/></radialGradient></defs><ellipse cx="50" cy="46" rx="30" ry="52" fill="url(#${id})"/>`:"";
@@ -2359,7 +2365,7 @@ function evoHtml(c){
    <p class="evod">${physD25(cur)}${nx?` <span>Siguiente: ${physD25(cur+1)}</span>`:""}</p>
    ${nx?`<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(pct)}" aria-label="Progreso hasta el siguiente físico"><i style="width:${pct}%"></i></div><div style="font-size:12px;color:var(--muted)">Faltan <b style="color:var(--ink)">${lvlNeed(nx.lv)-c.xp} XP</b> para el físico <b style="color:var(--ink)">${nx.n}</b> (nivel ${nx.lv}).</div>`:`<div style="font-size:12px;color:var(--muted)">Has llegado al físico máximo. ¡Leyenda!</div>`}</div>`;
 }
-function bandSvg(ex,p){const a=ex.ba;if(!a)return "";
+function bandSvg(ex,p){if(ex.prop==="cable"||ex.sled26||ex.pad26)return gymSvg26(ex,p);const a=ex.ba;if(!a)return "";
   const ln=(u,v)=>`<line class="bandl" x1="${f1(u[0])}" y1="${f1(u[1])}" x2="${f1(v[0])}" y2="${f1(v[1])}"/>`;
   if(a==="f")return ln(add(p.f,[0,-1]),p.w)+(ex.front?ln(mx(add(p.f,[0,-1])),mx(p.w)):"");
   if(a==="mir")return ln(mx(p.w),p.w);
@@ -2958,7 +2964,7 @@ function openSettings(){
 /* ================= MATERIAL, EJERCICIOS EXTRA Y RUTINAS PROPIAS ================= */
 const GEAR=[["db","Mancuernas"],["kb","Pesa rusa"],["bar","Barra con discos"],["bench","Banco"],["chair","Silla o escalón firme"],["band","Gomas con asas"],["mband","Minibanda"],["ball","Balón medicinal"],["pull","Barra de dominadas"],["bike","Bici o bici estática"],["pool","Piscina"]];
 const GEAR_DEF=["db","kb","bar","bench","chair","band","mband","ball","bike","pool"];
-const myGear=()=>Array.isArray(S.cfg.gear)?S.cfg.gear:GEAR_DEF;
+const myGear=()=>gearFor26(curPl26());
 const hasG=g=>myGear().includes(g);
 function needs(id){const e=EX[id];if(!e)return [];if(e.eq)return e.eq;const o=[];
   if(e.prop&&GEAR.some(x=>x[0]===e.prop))o.push(e.prop);
@@ -3109,9 +3115,156 @@ Object.assign(ALT,{sentsalto:["sentadilla","burpee"],zancadapc:["zancadaatras","
 function altsOf(id){const o=[];for(const x of [...(ALT[id]||[]),...(PATS[patOf(id)]||[])])if(x!==id&&EX[x]&&!o.includes(x))o.push(x);const ok=o.filter(canDo);return (ok.length?ok:o).slice(0,8);}
 function subFor(id,used){const ord=[];for(const x of ALT[id]||[])ord.push(x);let p=patOf(id);const seen=new Set();while(p&&!seen.has(p)){seen.add(p);ord.push(...PATS[p]);p=PATF[p];}
   const c=ord.filter(x=>x!==id&&canDo(x));return c.find(x=>!used.has(x))||c[0]||(canDo("sentadilla")?"sentadilla":id);}
-function adaptSess(ss){if(!ss||!ss.items||!ss.items.some(i=>EX[i[0]]&&!canDo(i[0])))return ss;
+function adaptSess(ss){const a=adaptSess0(ss);return curPl26()==="gym"?up26(a):a;}
+function adaptSess0(ss){if(!ss||!ss.items||!ss.items.some(i=>EX[i[0]]&&!canDo(i[0])))return ss;
   const used=new Set(ss.items.map(i=>i[0]).filter(canDo));
   return Object.assign({},ss,{adapted:true,items:ss.items.map(it=>{if(!EX[it[0]]||canDo(it[0]))return it;const n=subFor(it[0],used);used.add(n);return [n,it[1],it[2]];})});}
+/* v26: modo casa / gym */
+var PL26=null,PLC26={casa:0,gym:0};
+GEAR.push(["cable","Poleas"],["machine","Máquinas guiadas (prensa, multipower…)"]);
+var GYM_DEF=["db","kb","bar","bench","chair","band","mband","ball","pull","bike","cable","machine"];
+function defPl26(k){const w=(S.cfg.placeW||{})[fromKey(k).getDay()];if(w==="gym"||w==="casa")return w;return S.cfg.place==="gym"?"gym":"casa";}
+function placeOf26(k){const r=S.days&&S.days[k];if(r&&(r.place==="gym"||r.place==="casa"))return r.place;return defPl26(k);}
+function curPl26(){if(PL26)return PL26;try{if(sel)return placeOf26(sel);}catch(e){}return S.cfg&&S.cfg.place==="gym"?"gym":"casa";}
+function gearFor26(pl){if(pl==="gym")return Array.isArray(S.cfg.gearGym)?S.cfg.gearGym:GYM_DEF;return Array.isArray(S.cfg.gear)?S.cfg.gear:GEAR_DEF;}
+function withPl26(pl,fn,gear){const o=PL26,kk=pl==="gym"?"gearGym":"gear",og=S.cfg[kk];PL26=pl||"casa";if(gear)S.cfg[kk]=gear;
+  try{return fn();}finally{PL26=o;if(gear){if(og===undefined)delete S.cfg[kk];else S.cfg[kk]=og;}}}
+/* fija el sitio de los días ya registrados antes de cambiar el sitio por defecto, para no reescribir el historial */
+function stamp26(){for(const k of Object.keys(S.days||{})){const r=S.days[k];if(!r||r.place||k>TK)continue;if(k===TK&&!r.done&&!setsDone(k))continue;r.place=placeOf26(k);}}
+function setDefPl26(pl){pl=pl==="gym"?"gym":"casa";if((S.cfg.place==="gym"?"gym":"casa")!==pl){stamp26();S.cfg.place=pl;}}
+const ld26=x=>{const n=needs(x);if(!n.length)return 0;return curPl26()==="gym"&&n.some(g=>g==="bar"||g==="cable"||g==="machine")?2:1;};
+var DAYF26=["domingos","lunes","martes","miércoles","jueves","viernes","sábados"];
+
+/* selector en la pestaña Entreno */
+function placeHtml26(k,ss,done){
+  if(done||!ss||!ss.items||!ss.items.length||ss.kind==="descanso"||ss.kind==="deporte"||ss.mode==="pasos"||ss.mode==="mini"||planId(k)==="N")return "";
+  const pl=placeOf26(k),dow=fromKey(k).getDay(),w=(S.cfg.placeW||{})[dow],started=setsDone(k)>0,dn=DAYF26[dow];
+  const b=(v,l)=>`<button type="button" data-pl26="${v}" aria-pressed="${pl===v}"${started&&pl!==v?" disabled":""}>${l}</button>`;
+  const rem=started?`<span>Ya has empezado: termina aquí la sesión.</span>`:w===pl?`<span>Todos los ${dn}: ${pl==="gym"?"gym":"casa"}</span><button type="button" class="linkb" data-plw26="">Quitar</button>`:`<button type="button" class="linkb" data-plw26="${pl}">Recordar: los ${dn}, ${pl==="gym"?"en el gym":"en casa"}</button>`;
+  return `<div class="pl26"><div class="seg" role="group" aria-label="Dónde entrenas este día">${b("casa","🏠 En casa")}${b("gym","🏋️ En el gym")}</div>
+   <div class="pl26r">${rem}<button type="button" class="linkb" data-gear26="${pl}">Material ${pl==="gym"?"del gym":"de casa"}</button></div></div>`;}
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-pl26],[data-plw26],[data-gear26]");if(!b||b.disabled)return;
+  if(b.dataset.gear26!==undefined){openGear(b.dataset.gear26);return;}
+  const k=sel,r=dayRec(k,true);
+  if(b.dataset.pl26!==undefined){const v=b.dataset.pl26;if(v===placeOf26(k))return;if(v===defPl26(k))delete r.place;else r.place=v;delete r.swap;
+    toast(v==="gym"?"Sesión adaptada al gym":"Sesión adaptada a casa");}
+  else{const dow=fromKey(k).getDay(),v=b.dataset.plw26;stamp26();const pw=Object.assign({},S.cfg.placeW||{});if(v)pw[dow]=v;else delete pw[dow];S.cfg.placeW=pw;
+    if(r.place&&r.place===defPl26(k))delete r.place;toast(v?"Los "+DAYF26[dow]+" entrenarás "+(v==="gym"?"en el gym":"en casa"):"Quitado");}
+  save();render();});
+
+/* hoja de material: casa y gym */
+function openGear26(pl){const g={casa:gearFor26("casa").slice(),gym:gearFor26("gym").slice()};let cur=pl==="gym"||pl==="casa"?pl:(S.cfg.place==="gym"?"gym":"casa");let main=S.cfg.place==="gym"?"gym":"casa";
+  const seg=(attr,val,opts)=>`<div class="seg" role="group">${opts.map(([v,l])=>`<button type="button" ${attr}="${v}" aria-pressed="${val===v}">${l}</button>`).join("")}</div>`;
+  const html=`<p class="note" style="margin:0">Guarda el material de cada sitio. La app cambia sola los ejercicios para los que te falta algo por otros que trabajan lo mismo, y en cada ejercicio puedes elegir otra alternativa con «⇄ Cambiar».</p>
+   <div class="setsec"><h4>¿Dónde entrenas normalmente?</h4><p class="small">Es el sitio de cada día salvo que lo cambies en la pestaña Entreno.</p>${seg("data-gmain",main,[["casa","🏠 En casa"],["gym","🏋️ En el gym"]])}</div>
+   <div class="setsec"><h4>Material de…</h4>${seg("data-gtab",cur,[["casa","Casa"],["gym","Gym"]])}<div id="gc26" style="margin-top:10px">${gearChips(g[cur])}</div></div>
+   <div class="actions"><button class="btn" type="button" data-gs>Guardar</button></div>`;
+  openSheet("Tu material","Casa y gym",html,(ov,close)=>{
+    ov.addEventListener("change",e=>{if(e.target.matches("[data-g]"))g[cur]=[...ov.querySelectorAll("#gc26 [data-g]")].filter(x=>x.checked).map(x=>x.dataset.g);});
+    ov.querySelectorAll("[data-gtab]").forEach(b=>b.onclick=()=>{cur=b.dataset.gtab;ov.querySelectorAll("[data-gtab]").forEach(x=>x.setAttribute("aria-pressed",x===b));ov.querySelector("#gc26").innerHTML=gearChips(g[cur]);});
+    ov.querySelectorAll("[data-gmain]").forEach(b=>b.onclick=()=>{main=b.dataset.gmain;ov.querySelectorAll("[data-gmain]").forEach(x=>x.setAttribute("aria-pressed",x===b));});
+    ov.querySelector("[data-gs]").onclick=()=>{stamp26();S.cfg.gear=g.casa;S.cfg.gearGym=g.gym;setDefPl26(main);S.cfg.onb=1;save();close();render();toast("Material guardado");};});}
+
+/* ---------- ejercicios de gimnasio ---------- */
+const SEAT26=(o)=>Object.assign({h:[46,40],s:[46,50],e:[47,64],w:[52,76],p:[46,79],k:[66,80],f:[67,95]},o);
+const PRS26={h:[13,48],s:[20,55],e:[28,64],w:[37,72],p:[40,76]};
+Object.assign(EX,{
+ "gy-remo":{n:"Remo en polea",g:"Gimnasio",prop:"cable",scene:"cable",ba:[86,34],eq:["cable"],A:EX["g-remo"].A,B:EX["g-remo"].B,m:["Espalda","Bíceps"],
+  steps:["Pon la polea a la altura del pecho y engancha un agarre en V o una barra corta.","Da un paso atrás hasta que el cable esté tenso, rodillas algo flexionadas.","Tira del agarre hacia el abdomen juntando los omóplatos.","Vuelve despacio estirando los brazos sin soltar la tensión."],
+  err:["Tirar echando el cuerpo hacia atrás.","Subir los hombros hacia las orejas."],tip:"Piensa en llevar los codos hacia atrás, no las manos."},
+ "gy-jalon":{n:"Jalón al pecho",g:"Gimnasio",prop:"cable",scene:"lat",ba:[56,-4],eq:["cable"],
+  A:SEAT26({h:[50,40],s:[50,50],e:[53,37],w:[55,24],p:[50,79],k:[66,80],f:[66,95]}),B:SEAT26({h:[50,40],s:[50,50],e:[46,62],w:[52,52],p:[50,79],k:[66,80],f:[66,95]}),m:["Dorsales","Bíceps"],
+  steps:["Siéntate con los muslos bajo el rodillo y agarra la barra algo más abierta que los hombros.","Saca pecho e inclínate un poco hacia atrás.","Tira de la barra hasta la parte alta del pecho llevando los codos hacia abajo.","Sube controlando hasta estirar los brazos."],
+  err:["Bajar la barra por detrás de la nuca.","Balancearte para tirar."],tip:"Es la mejor forma de preparar tus primeras dominadas."},
+ "gy-facepull":{n:"Face pull en polea",g:"Gimnasio",prop:"cable",scene:"cable",ba:[86,20],eq:["cable"],A:EX["g-facepull"].A,B:EX["g-facepull"].B,m:["Hombros","Espalda"],
+  steps:["Pon la polea a la altura de la cara con la cuerda.","Agarra la cuerda con las palmas hacia abajo y da un paso atrás.","Tira hacia la cara abriendo los codos y separando las manos.","Vuelve despacio."],
+  err:["Tirar con los codos bajos.","Usar demasiado peso y echar el cuerpo atrás."],tip:"Peso ligero y aguanta 1 s al final: es un ejercicio de postura."},
+ "gy-triceps":{n:"Tríceps en polea alta",g:"Gimnasio",prop:"cable",scene:"cable",ba:[86,6],eq:["cable"],A:P({e:[53,40],w:[63,33]}),B:P({e:[53,40],w:[56,53]}),m:["Tríceps"],
+  steps:["Polea arriba con cuerda o barra; ponte de cara a la máquina.","Codos pegados al cuerpo y antebrazos a la altura del pecho.","Empuja hacia abajo hasta estirar los brazos del todo.","Sube despacio sin mover los codos."],
+  err:["Separar los codos del cuerpo.","Inclinarte encima del peso."],tip:"Solo se mueven los antebrazos: los codos se quedan quietos."},
+ "gy-curl":{n:"Curl en polea baja",g:"Gimnasio",prop:"cable",scene:"cable",ba:[86,90],eq:["cable"],A:EX.curl.A,B:EX.curl.B,m:["Bíceps"],
+  steps:["Polea abajo con barra; ponte de cara a la máquina.","Codos pegados al cuerpo y palmas hacia arriba.","Sube la barra hacia los hombros.","Baja lento hasta estirar los brazos."],
+  err:["Adelantar los codos.","Balancear el torso."],tip:"La polea mantiene la tensión todo el recorrido: no hace falta mucho peso."},
+ "gy-cruce":{n:"Press de pecho en polea",g:"Gimnasio",prop:"cable",scene:"cableL",ba:[24,30],eq:["cable"],c2:true,A:EX["g-press"].A,B:EX["g-press"].B,m:["Pecho","Tríceps"],
+  steps:["Poleas a la altura del pecho, de espaldas a la máquina, un pie adelantado.","Agarres a la altura del pecho, codos a unos 45°.","Empuja hacia delante juntando las manos.","Vuelve controlando, sin dejar que el peso tire de ti."],
+  err:["Abrir los codos en cruz.","Arquear la zona lumbar."],tip:"Junta las manos al final y aprieta el pecho 1 s."},
+ "gy-pecho":{n:"Press de pecho en máquina",g:"Gimnasio",prop:"machine",scene:"seatb",eq:["machine"],A:SEAT26({e:[40,55],w:[50,50]}),B:SEAT26({e:[59,50],w:[72,50]}),m:["Pecho","Tríceps","Hombros"],
+  steps:["Ajusta el asiento para que los agarres queden a la altura del pecho.","Espalda pegada al respaldo y pies apoyados.","Empuja hasta estirar los brazos sin bloquear los codos.","Vuelve despacio hasta notar el estiramiento en el pecho."],
+  err:["Despegar la espalda del respaldo.","Dejar caer el peso de golpe."],tip:"Buena opción para empezar con pesos de pecho sin compañero."},
+ "gy-hombro":{n:"Press de hombros en máquina",g:"Gimnasio",prop:"machine",scene:"seatb",eq:["machine"],A:SEAT26({e:[52,62],w:[51,49]}),B:SEAT26({e:[48,37],w:[48,24]}),m:["Hombros","Tríceps"],
+  steps:["Ajusta el asiento para que los agarres queden a la altura de los hombros.","Espalda pegada al respaldo y abdomen firme.","Empuja hacia arriba hasta casi estirar los brazos.","Baja controlando hasta los hombros."],
+  err:["Arquear la espalda para empujar.","Encoger el cuello."],tip:"Aprieta glúteos y abdomen para que trabajen solo los hombros."},
+ "gy-sentmult":{n:"Sentadilla en multipower",g:"Gimnasio",prop:"bar",scene:"smith",eq:["machine"],A:EX["bar-sentadilla"].A,B:EX["bar-sentadilla"].B,m:["Cuádriceps","Glúteos"],
+  steps:["Ponte bajo la barra con ella apoyada en la parte alta de la espalda.","Pies un poco por delante de la barra, a la anchura de los hombros.","Desbloquea girando la barra y baja como si te sentaras.","Sube empujando el suelo y bloquea la barra al terminar."],
+  err:["Dejar que las rodillas se vayan hacia dentro.","Olvidar los topes de seguridad."],tip:"Pon los topes justo por debajo de tu punto más bajo: entrenas sin miedo."},
+ "gy-prensa":{n:"Prensa de piernas",g:"Gimnasio",prop:"machine",scene:"prensa",eq:["machine"],sled26:[.78,-.62],
+  A:Object.assign({},PRS26,{k:[38,56],f:[57,62]}),B:Object.assign({},PRS26,{k:[50,59],f:[69,53]}),m:["Cuádriceps","Glúteos"],
+  steps:["Siéntate con la espalda y la cadera pegadas al respaldo.","Pies en la plataforma a la anchura de las caderas.","Quita los seguros y baja doblando las rodillas hacia el pecho.","Empuja hasta casi estirar las piernas sin bloquear las rodillas."],
+  err:["Despegar la cadera del asiento al bajar.","Bloquear las rodillas arriba."],tip:"Pies más altos: más glúteo. Pies más bajos: más cuádriceps."},
+ "gy-extension":{n:"Extensión de cuádriceps",g:"Gimnasio",prop:"machine",scene:"seatb",eq:["machine"],pad26:1,
+  A:SEAT26({}),B:SEAT26({f:[83,76]}),m:["Cuádriceps"],
+  steps:["Ajusta el respaldo para que la rodilla quede en el eje de la máquina.","Rodillo apoyado justo encima de los tobillos.","Estira las piernas hasta arriba y aprieta 1 s.","Baja despacio sin dejar caer el peso."],
+  err:["Dar tirones con el peso.","Despegar la cadera del asiento."],tip:"Ideal como remate después de la sentadilla o la prensa."},
+ "gy-femoral":{n:"Curl femoral en máquina",g:"Gimnasio",prop:"machine",scene:"seatb",eq:["machine"],pad26:-1,
+  A:SEAT26({f:[83,78]}),B:SEAT26({f:[60,94]}),m:["Isquios"],
+  steps:["Siéntate con la rodilla en el eje de la máquina y el rodillo detrás de los tobillos.","Baja la almohadilla de los muslos hasta que te sujete.","Lleva los talones hacia abajo y atrás todo lo que puedas.","Vuelve despacio hasta estirar."],
+  err:["Levantar la cadera del asiento.","Soltar el peso de golpe al volver."],tip:"Unos isquios fuertes protegen tus rodillas al correr y saltar."}
+});
+Object.assign(MUS,{"gy-remo":MUS["g-remo"],"gy-jalon":{p:["lats"],s:["biceps","delts","traps"]},"gy-facepull":MUS["g-facepull"]||{p:["delts","traps"],s:["lats"]},
+ "gy-triceps":{p:["triceps"],s:[]},"gy-curl":{p:["biceps"],s:["forearms"]},"gy-cruce":MUS["g-press"],"gy-pecho":{p:["pecs"],s:["triceps","delts"]},"gy-hombro":{p:["delts"],s:["triceps","traps"]},
+ "gy-sentmult":MUS["bar-sentadilla"],"gy-prensa":{p:["quads","glutes"],s:["adductors","hams"]},"gy-extension":{p:["quads"],s:[]},"gy-femoral":{p:["hams"],s:["calves"]}});
+Object.assign(X3,{"gy-triceps":{wz:1.6,ez:5},"gy-facepull":{wz:3},"gy-sentmult":X3["bar-sentadilla"]||{}});
+{const ins=(p,after,ids)=>{const a=PATS[p],i=a.indexOf(after);a.splice(i<0?a.length:i+1,0,...ids);};
+ ins("squat","bar-sentadilla",["gy-sentmult","gy-prensa"]);PATS.squat.push("gy-extension");
+ ins("hinge","bar-pmuerto",["gy-femoral"]);
+ ins("pushH","db-press",["gy-pecho","gy-cruce"]);ins("pushV","bar-press",["gy-hombro"]);
+ ins("pullH","remo1",["gy-remo"]);PATS.pullH.push("gy-facepull");PATS.pullV.unshift("gy-jalon");
+ ins("biceps","bar-curl",["gy-curl"]);ins("triceps","triceps",["gy-triceps"]);}
+Object.assign(ALT,{"gy-remo":["g-remo","remo","kb-remo"],"gy-facepull":["g-facepull","g-apertura"],"gy-triceps":["g-triceps","triceps","fondos"],"gy-curl":["g-curl","curl","bar-curl"],
+ "gy-jalon":["dominadas","pullover","g-remo","remo"],"gy-cruce":["g-press","db-press","flexiones"],"gy-pecho":["db-press","presssuelo","flexiones"],"gy-hombro":["militar","g-hombro","pike"],
+ "gy-sentmult":["bar-sentadilla","goblet","sentadilla"],"gy-prensa":["bar-sentadilla","goblet","sentadilla"],"gy-extension":["bulgara","zancada","sentpared"],"gy-femoral":["rumano","g-pmuerto","puente"]});
+BADGES.push(["gym26","Rata de gimnasio","10 sesiones en el gym",c=>((c.pl26||{}).gym||0)>=10],["casa26","Guerrero de salón","10 sesiones en casa",c=>((c.pl26||{}).casa||0)>=10],
+ ["ambos26","Donde sea","Entrena en casa y en el gym la misma semana",c=>!!(c.pl26||{}).both]);
+
+/* dibujo 2D */
+function scene26Svg(sc){const R=(x,y,w,h,o)=>`<rect class="obj" x="${x}" y="${y}" width="${w}" height="${h}" rx="1.5"${o?` style="opacity:${o}"`:""}/>`;
+  const tw=x=>R(x,0,10,95)+R(x+2,66,6,26,.55);
+  const seat=R(35,80,28,4)+R(47,84,4,11),back=R(35,42,5,40);
+  if(sc==="cable")return tw(86);if(sc==="cableL")return tw(14);
+  if(sc==="seatb")return back+seat;
+  if(sc==="lat")return tw(86)+R(52,-7,44,3)+R(40,80,22,4)+R(49,84,4,11)+R(62,74,9,4);
+  if(sc==="smith")return R(44,-6,2.5,101,.8)+R(36,-8,18,2.5);
+  if(sc==="prensa")return `<polygon class="obj" points="11,53 37,80 34.1,82.8 8.1,55.8"/><polygon class="obj" points="56,74 88,48.5 89.6,50.5 57.6,76"/>`+R(24,82,4,13)+R(82,50,3,45);
+  return "";}
+function gymSvg26(ex,p){let o="";const f=v=>Math.round(v*10)/10;const ln=(a,b,c)=>`<line class="${c}" x1="${f(a[0])}" y1="${f(a[1])}" x2="${f(b[0])}" y2="${f(b[1])}"/>`;
+  if(ex.prop==="cable"&&Array.isArray(ex.ba)){o+=ln(ex.ba,p.w,"cablel")+`<circle class="pulley" cx="${ex.ba[0]}" cy="${ex.ba[1]}" r="2"/>`;}
+  if(ex.sled26){const d=ex.sled26,q=[-d[1],d[0]].map(v=>-v),c=[p.f[0]+d[0]*2.2,p.f[1]+d[1]*2.2];o+=ln([c[0]+q[0]*8,c[1]+q[1]*8],[c[0]-q[0]*8,c[1]-q[1]*8],"sled");}
+  if(ex.pad26){const v=[p.f[0]-p.k[0],p.f[1]-p.k[1]],L=Math.hypot(...v)||1,s=ex.pad26;const c=[p.f[0]-v[0]*.12+s*v[1]/L*2.8,p.f[1]-v[1]*.12-s*v[0]/L*2.8];o+=`<circle class="pad26" cx="${f(c[0])}" cy="${f(c[1])}" r="2.6"/>`;}
+  return o;}
+/* dibujo 3D */
+function gym3_26(o){const {sc,ex,R2,T,E,hands,feet,mid,Wp}=o;const ST=C3.st,OB=C3.o;const W=(x,y,z)=>[x-50,95-y,z||0];
+  const tw=x=>{R2(x,0,10,95,7);R2(x+2,66,6,26,7.4,ST);};
+  if(sc==="cable"||sc==="lat")tw(86);if(sc==="cableL")tw(14);
+  if(sc==="lat"){R2(52,-7,44,3,1.6,ST);R2(40,80,22,4,8);R2(49,84,4,11,2);R2(62,74,9,4,8);}
+  if(sc==="seatb"){R2(35,42,5,40,8);R2(35,80,28,4,8);R2(47,84,4,11,2);}
+  if(sc==="smith"){const hx=(hands[0][0]+hands[1][0])/2;for(const z of [-18,18])T([hx,-1,z],[hx,102,z],1,1,ST);T([hx,102,-18],[hx,102,18],1,1,ST);}
+  if(sc==="prensa"){for(const z of [-6,-2,2,6])T(W(9.5,54.4,z),W(35.5,81.4,z),2.2,2.2,OB);for(const z of [-9,9])T(W(56.8,75,z),W(88.8,49.5,z),.9,.9,ST);R2(24,82,4,13,2);R2(82,50,3,45,2);}
+  if(ex.prop==="cable"&&Array.isArray(ex.ba)){const an=Wp(ex.ba,0);E(an,ID3,[1.7,1.7,1.7],ST,{ol:0});
+    const apart=Math.hypot(...v3s(hands[0],hands[1]))>3;
+    if(ex.c2&&apart){for(const h of hands)T(v3a(an,[0,0,h[2]>0?3:-3]),h,.32,.32,ST,{ol:0});}
+    else{T(an,mid,.32,.32,ST,{ol:0});if(apart)T(hands[0],hands[1],.55,.55,ST,{ol:0});}}
+  if(ex.sled26&&feet.length===2){const d=ex.sled26,c=v3a(v3m(v3a(feet[0],feet[1]),.5),[d[0]*2.2,-d[1]*2.2,0]),q=[-d[1],-d[0],0].map(v=>-v);
+    for(const z of [-8,-4,0,4,8]){const cz=[c[0],c[1],z];T(v3a(cz,v3m(q,7)),v3a(cz,v3m(q,-7)),.9,.9,ST,{ol:0});}}
+  if(ex.pad26&&feet.length===2){const fm=v3m(v3a(feet[0],feet[1]),.5);T([fm[0],fm[1]+(ex.pad26>0?0:1),-8],[fm[0],fm[1]+(ex.pad26>0?0:1),8],1.9,1.9,OB,{ol:0});}
+}
+/* en el gym, los ejercicios caseros de fuerza suben a su versión con barra, polea o máquina */
+var UPP26=["squat","hinge","glute","pushH","pushV","pullH","pullV","biceps","triceps"],LITE26=["chair","band","mband","ball"];
+function up26(ss){if(!ss||!ss.items||ss.kind!=="fuerza")return ss;const used=new Set(ss.items.map(i=>i[0]));let ch=false;
+  const items=ss.items.map(it=>{const id=it[0],p=patOf(id);if(!EX[id]||!UPP26.includes(p)||needs(id).some(g=>!LITE26.includes(g)))return it;
+    const c=PATS[p].filter(x=>x!==id&&!used.has(x)&&canDo(x)&&ld26(x)===2);if(!c.length)return it;used.add(c[0]);ch=true;
+    const rp=it[2]&&/[0-9]/.test(it[2])?it[2]:"10-12 reps";return [c[0],it[1],rp];});
+  return ch?Object.assign({},ss,{adapted:true,items}):ss;}
+
 /* sesiones sin bici */
 SESS.W={id:"W",name:"Cardio a pie",sub:"Caminata rápida + movilidad",dur:"45-60 min",rest:60,kind:"fuerza",sh:"Pie",items:[["caminata",1,"40-50 min a paso rápido"],["movilidad",1,"10 min"]],str:STR.S.slice(),warm:[]};
 SESS.Y={id:"Y",name:"HIIT sin material",sub:"Intervalos con tu cuerpo",dur:"30 min",kind:"circuito",sh:"HIIT",items:[["burpee",5,"30 s"],["sentsalto",5,"30 s"],["mountain",5,"30 s"],["rodillas",5,"30 s"],["plancha",5,"30 s"]],str:STR.H.slice(),warm:WARM.C.slice()};
@@ -3138,7 +3291,7 @@ function genPlan(o){
   const week={0:"R",1:"R",2:"R",3:"R",4:"R",5:"R",6:"R"};
   const pick=(p,used,loaded)=>{let q=p;const seen=new Set();while(q&&!seen.has(q)){seen.add(q);
       let c=PATS[q].filter(x=>canDo(x)&&!used.has(x));if(lv===1)c=c.filter(x=>!["sentsalto","burpee","dominadas","chinup","pike","bulgara","colgado"].includes(x)).concat(c.filter(x=>["bulgara","pike"].includes(x)));
-      if(loaded)c.sort((a,b)=>(needs(a).length?0:1)-(needs(b).length?0:1));
+      if(loaded)c.sort((a,b)=>ld26(b)-ld26(a));
       if(c.length)return c.find(x=>!usedAll.has(x))||c[0];q=PATF[q];}return null;};
   split.forEach((t,i)=>{const dow=GDAYS[o.days][i];
     if(t==="cardio"){week[dow]=hasG("bike")?"S":"W";return;}
@@ -3159,7 +3312,7 @@ function genPlan(o){
     week[dow]=id;});
   return {sess:out,week};
 }
-function applyGen(o){const g=genPlan(o);const my={};
+function applyGen(o){const g=withPl26(o.place==="gym"?"gym":"casa",()=>genPlan(o));const my={};
   for(const [id,s] of Object.entries(S.cfg.my||{}))if(!s.gen)my[id]=s;
   let nx=1;const rename={};for(const id of Object.keys(g.sess)){while(my["U"+nx])nx++;rename[id]="U"+nx;my["U"+nx]=g.sess[id];nx++;}
   const wk={};for(const d in g.week)wk[d]=rename[g.week[d]]||g.week[d];
@@ -3168,11 +3321,12 @@ function applyGen(o){const g=genPlan(o);const my={};
   save();render();}
 function gearChips(sel){return `<div class="gearg">${GEAR.map(([g,l])=>`<label class="gch"><input type="checkbox" data-g="${g}" ${sel.includes(g)?"checked":""}><span>${l}</span></label>`).join("")}</div>`;}
 function openGen(first){
-  const go=Object.assign({days:3,goal:"mixto",time:40,level:1,mode:"reps"},S.cfg.genOpts||{});let gear=myGear().slice();
+  const go=Object.assign({days:3,goal:"mixto",time:40,level:1,mode:"reps",place:S.cfg.place==="gym"?"gym":"casa"},S.cfg.genOpts||{});const gm26={casa:gearFor26("casa").slice(),gym:gearFor26("gym").slice()};let gear=gm26[go.place]||gm26.casa;
   const seg=(k,opts)=>`<div class="seg" role="group" aria-label="${k}">${opts.map(([v,l])=>`<button type="button" data-go="${k}" data-v="${v}" aria-pressed="${String(go[k])===String(v)}">${l}</button>`).join("")}</div>`;
   const html=`${first?`<p class="note" style="margin:0">Te doy la bienvenida a La Forja. Dime qué material tienes y cuánto quieres entrenar: te monto un plan semanal con ejercicios que puedes hacer. Luego podrás cambiar cualquier día o crear tus propias rutinas.</p>`:`<p class="note" style="margin:0">El plan nuevo sustituye a tu semana tipo desde hoy. Tus días pasados y tus rutinas hechas a mano se conservan.</p>`}
    ${first?`<div class="setsec"><h4>Tu muñeco</h4><p class="small">El que te enseña cómo se hace cada ejercicio.</p><div class="seg" role="group" aria-label="Muñeco"><button type="button" data-fig="m" aria-pressed="${!isF()}">Chico</button><button type="button" data-fig="f" aria-pressed="${isF()}">Chica</button></div></div>`:""}
-   <div class="setsec"><h4>¿Qué material tienes?</h4><p class="small">Los ejercicios con tu peso corporal siempre están disponibles.</p>${gearChips(gear)}</div>
+   <div class="setsec"><h4>¿Dónde vas a entrenar?</h4><p class="small">El plan se monta con el material de ese sitio. Si algún día entrenas en el otro, lo cambias en la pestaña Entreno y la app adapta los ejercicios.</p>${seg("place",[["casa","🏠 En casa"],["gym","🏋️ En el gym"]])}</div>
+   <div class="setsec"><h4 id="gq26">${go.place==="gym"?"¿Qué hay en tu gym?":"¿Qué material tienes?"}</h4><p class="small">Los ejercicios con tu peso corporal siempre están disponibles.</p><div id="gc26">${gearChips(gear)}</div></div>
    <div class="setsec"><h4>Días de entreno a la semana</h4>${seg("days",[[2,"2"],[3,"3"],[4,"4"],[5,"5"],[6,"6"]])}</div>
    <div class="setsec"><h4>Objetivo</h4>${seg("goal",GOALS)}</div>
    <div class="setsec"><h4>Tiempo por sesión</h4>${seg("time",[[20,"20"],[40,"40"],[60,"60"],[75,"75"],[90,"90 min"]])}</div>
@@ -3181,16 +3335,17 @@ function openGen(first){
    <div id="genPrev"></div>
    <div class="actions"><button class="btn" type="button" data-gen>Crear mi plan</button>${first?`<button class="btn ghost" type="button" data-genskip>Usar la rutina de ejemplo</button>`:""}</div>`;
   openSheet(first?"Empezamos":"Plan automático","Crea tu plan",html,(ov,close)=>{
-    const prev=()=>{const old=S.cfg.gear;S.cfg.gear=gear;const g=genPlan(go);S.cfg.gear=old;
+    const prev=()=>{const g=withPl26(go.place,()=>genPlan(go),gear);
       ov.querySelector("#genPrev").innerHTML=`<div class="genprev"><div class="eyebrow">Vista previa</div>${[1,2,3,4,5,6,0].map(d=>{const id=g.week[d];const s=g.sess[id]||SESS[id];return `<div class="gpd"><b>${DAYN[d]}</b><span>${id==="R"?"Descanso":esc(s.name)}${g.sess[id]?`<small>${s.items.map(i=>EX[i[0]].n).join(" · ")}</small>`:""}</span></div>`;}).join("")}</div>`;};
-    ov.querySelectorAll("[data-g]").forEach(c=>c.onchange=()=>{gear=[...ov.querySelectorAll("[data-g]")].filter(x=>x.checked).map(x=>x.dataset.g);prev();});
+    ov.addEventListener("change",e=>{if(!e.target.matches("[data-g]"))return;gear=[...ov.querySelectorAll("#gc26 [data-g]")].filter(x=>x.checked).map(x=>x.dataset.g);gm26[go.place]=gear;prev();});
     ov.querySelectorAll("[data-fig]").forEach(b=>b.onclick=()=>{S.cfg.fig=b.dataset.fig;ov.querySelectorAll("[data-fig]").forEach(x=>x.setAttribute("aria-pressed",x===b));save();render();});
-    ov.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{const k=b.dataset.go;go[k]=k==="goal"||k==="mode"?b.dataset.v:+b.dataset.v;ov.querySelectorAll(`[data-go="${k}"]`).forEach(x=>x.setAttribute("aria-pressed",x===b));prev();});
-    ov.querySelector("[data-gen]").onclick=()=>{S.cfg.gear=gear;S.cfg.onb=1;close();applyGen(go);toast("Plan creado: mira tu semana");};
-    const sk=ov.querySelector("[data-genskip]");if(sk)sk.onclick=()=>{S.cfg.gear=gear;S.cfg.onb=1;save();close();render();toast("Rutina de ejemplo adaptada a tu material");};
+    ov.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{const k=b.dataset.go;go[k]=k==="goal"||k==="mode"||k==="place"?b.dataset.v:+b.dataset.v;if(k==="place"){gear=gm26[go.place];ov.querySelector("#gc26").innerHTML=gearChips(gear);ov.querySelector("#gq26").textContent=go.place==="gym"?"¿Qué hay en tu gym?":"¿Qué material tienes?";}ov.querySelectorAll(`[data-go="${k}"]`).forEach(x=>x.setAttribute("aria-pressed",x===b));prev();});
+    ov.querySelector("[data-gen]").onclick=()=>{S.cfg.gear=gm26.casa;if(go.place==="gym"||Array.isArray(S.cfg.gearGym))S.cfg.gearGym=gm26.gym;setDefPl26(go.place);S.cfg.onb=1;close();applyGen(go);toast("Plan creado: mira tu semana");};
+    const sk=ov.querySelector("[data-genskip]");if(sk)sk.onclick=()=>{S.cfg.gear=gm26.casa;if(go.place==="gym")S.cfg.gearGym=gm26.gym;setDefPl26(go.place);S.cfg.onb=1;save();close();render();toast("Rutina de ejemplo adaptada a tu material");};
     prev();});
 }
-function openGear(){let gear=myGear().slice();
+function openGear(pl){return openGear26(pl);}
+function openGear0(){let gear=myGear().slice();
   openSheet("Tu material","¿Con qué entrenas?",`<p class="note" style="margin:0">La app cambia sola los ejercicios para los que te falta material por otros que trabajan lo mismo. En cada ejercicio puedes elegir otra alternativa con «⇄ Cambiar».</p>${gearChips(gear)}<div class="actions"><button class="btn" type="button" data-gs>Guardar</button></div>`,(ov,close)=>{
     ov.querySelector("[data-gs]").onclick=()=>{S.cfg.gear=[...ov.querySelectorAll("[data-g]")].filter(x=>x.checked).map(x=>x.dataset.g);S.cfg.onb=1;save();close();render();toast("Material guardado");};});}
 /* ---------- mis rutinas: lista y editor ---------- */
@@ -3518,8 +3673,8 @@ function viewHoy(c){
    <div class="phase"><div class="row">${seg}</div><p>${phaseTxt}</p></div>
    <div class="sess-head"><div><div class="eyebrow">${DAYN[selD.getDay()]} ${selD.getDate()}/${selD.getMonth()+1}${sel===TK?" · hoy":""}</div><h2>${ss.name}</h2><div class="meta">${ss.sub} · ${ss.dur}</div></div>
      <div>${done?`<span class="tag done">${ss.mode==="pasos"?"Cambiada por pasos":ss.mode?"Exprés hecha":"Completada"}</span>`:ss.mode==="pasos"?`<span class="tag num" style="font-size:14px">${fmtN(stepsOf(sel))}/${fmtN(S.cfg.swapGoal)} pasos</span>`:ss.kind==="deporte"?`<span class="tag num" style="font-size:14px">${actMin(r)}/20 min</span>`:ss.kind!=="descanso"?`<span class="tag num" style="font-size:14px">${n}/${required(ss)} ${ss.kind==="circuito"?"bloques":"series"}</span>`:""}</div></div>
-   ${chg}
-   ${ss.adapted?`<p class="small adn">Adaptada a tu material: los ejercicios para los que te falta algo se han cambiado por otros que trabajan lo mismo.</p>`:""}
+   ${chg}${placeHtml26(sel,ss,done)}
+   ${ss.adapted?`<p class="small adn">${placeOf26(sel)==="gym"?"Adaptada a tu gym: algunos ejercicios se han cambiado por su versión con máquina, polea o barra, o por otros que trabajan lo mismo.":"Adaptada a tu material de casa: los ejercicios para los que te falta algo se han cambiado por otros que trabajan lo mismo."}</p>`:""}
    ${modeHtml(sel,bs,ss,done)}
    ${sel<=TK?painHtml(ss,sel,done):""}
    ${frz}${ss.mode==="pasos"?"":misHtml}${sel===TK?rescueHtml(c)+hoy21(c):""}${done&&ss.kind!=="descanso"&&sel<=TK?rpeHtml(r):""}
