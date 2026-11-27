@@ -528,6 +528,15 @@ table.t27{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
 table.t27 td,table.t27 th{padding:5px 6px;border-bottom:1px solid var(--line,rgba(127,127,127,.18));text-align:left}
 table.t27 th{font-size:11px;color:var(--muted);font-weight:600}
 .kg27 input{width:90px;font-size:18px;padding:6px 8px}
+/* v28: complementos, regalos y reposo */
+.rar.deporte{color:#2F80ED}
+.gift28{display:flex;flex-direction:column;gap:4px;margin-top:8px;font-size:13px;color:var(--muted)}
+.med28{background:var(--surface);border-radius:var(--r);padding:12px 14px;display:flex;flex-direction:column;gap:8px;box-shadow:inset 0 0 0 2px #2F80ED}
+.med28 .mh{display:flex;gap:10px;align-items:center}.med28 .mi{font-size:26px}
+.med28l{align-self:flex-start}
+.med28f{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.med28f label,.med28w{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600}
+.med28f input,.med28w input{font:inherit;padding:8px 10px;border-radius:10px;border:1px solid var(--line,#ccd);background:var(--bg);color:inherit}
 /* v22: comida */
 .pet{flex-wrap:wrap}
 .bellies{flex-basis:100%;display:flex;flex-direction:column;gap:6px;margin-top:4px}
@@ -2585,6 +2594,7 @@ function react(b,a,o={}){
   if(a.vprs>b.vprs)lines.push("¡Récord de volumen (kg × reps)! +15 XP.");
   if(a.weighIns>b.weighIns)lines.push("Medida semanal anotada: +10 XP y +10 monedas.");
   if(a.rpes>b.rpes)lines.push("Esfuerzo anotado: +5 XP y +5 monedas.");
+  title=giftLines28(a,b,lines)||title;
   const nb=BADGES.filter(x=>!x[3](b)&&x[3](a)).map(x=>x[1]);if(nb.length)lines.push("Logro desbloqueado: "+nb.join(", ")+".");
   const dxp=a.xp-b.xp,dc=a.coins-b.coins;
   if(title){const chests=a.pending.length>b.pending.length?`<button class="btn ghost" type="button" data-go="botin" style="justify-content:center">Ir a abrir ${a.pending.length>1?"cofres":"el cofre"}</button>`:"";
@@ -3435,6 +3445,225 @@ function gymStats27(){let mx=0,ids=new Set();for(const r of Object.values(S.days
 BADGES.push(["bar60","Barra cargada","Anota 60 kg en un ejercicio con barra",c=>gymStats27().mx>=60],["club100","Club de los 100","Anota 100 kg en un ejercicio con barra",c=>gymStats27().mx>=100],
  ["gymexp","Explorador del gym","Prueba 10 ejercicios distintos de gimnasio",c=>gymStats27().n>=10]);
 
+/* ================= v28: complementos, regalos de deporte y reposo médico ================= */
+ITEMS.push(
+ {id:"skin-lila",slot:"skin",n:"Camiseta lila",price:60,r:"común",v:"#B794F4"},
+ {id:"skin-coral",slot:"skin",n:"Camiseta coral",price:60,r:"común",v:"#FF7F6E"},
+ {id:"skin-menta",slot:"skin",n:"Camiseta menta",price:60,r:"común",v:"#7DD3C0"},
+ {id:"skin-pastel",slot:"skin",n:"Rosa pastel",price:80,r:"común",v:"#F6B8CF"},
+ {id:"skin-fucsia",slot:"skin",n:"Fucsia",price:120,r:"raro",v:"#E83E8C",lv:2},
+ {id:"head-lazo",slot:"head",n:"Lazo",price:50,r:"común"},
+ {id:"head-diadema",slot:"head",n:"Diadema",price:60,r:"común"},
+ {id:"head-coletero",slot:"head",n:"Coleta alta",price:50,r:"común"},
+ {id:"head-flor",slot:"head",n:"Flor en el pelo",price:70,r:"común"},
+ {id:"head-orejas",slot:"head",n:"Orejas de gato",price:120,r:"raro",lv:2},
+ {id:"head-tiara",slot:"head",n:"Tiara",price:null,r:"épico"},
+ {id:"face-pestanas",slot:"face",n:"Pestañas",price:50,r:"común"},
+ {id:"face-colorete",slot:"face",n:"Colorete y labios",price:50,r:"común"},
+ {id:"face-pecas",slot:"face",n:"Pecas",price:40,r:"común"},
+ {id:"face-corazon",slot:"face",n:"Gafas de corazón",price:110,r:"raro",lv:2},
+ {id:"face-purpurina",slot:"face",n:"Purpurina",price:null,r:"épico"},
+ {id:"acc-none",slot:"acc",n:"Nada",price:0,r:"común"},
+ {id:"acc-aros",slot:"acc",n:"Aros dorados",price:60,r:"común"},
+ {id:"acc-perlas",slot:"acc",n:"Pendientes de perla",price:70,r:"común"},
+ {id:"acc-collar",slot:"acc",n:"Collar de corazón",price:80,r:"común"},
+ {id:"acc-perlas2",slot:"acc",n:"Collar de perlas",price:140,r:"raro",lv:3},
+ {id:"acc-estrella",slot:"acc",n:"Pendientes de estrella",price:null,r:"épico"},
+ {id:"back-bandolera",slot:"back",n:"Bolso bandolera",price:80,r:"común"},
+ {id:"back-mochflor",slot:"back",n:"Mochila de flores",price:100,r:"común"},
+ {id:"back-hada",slot:"back",n:"Alas de hada",price:null,r:"épico"},
+ {id:"prop-rosa",slot:"prop",n:"Pesas rosas",price:90,r:"común",v:"#F472B6"},
+ {id:"prop-lila",slot:"prop",n:"Pesas lilas",price:90,r:"común",v:"#A78BFA"},
+ {id:"shoes-rosa",slot:"shoes",n:"Rosas",price:40,r:"común",v:"#F48FB1"},
+ {id:"shoes-lila",slot:"shoes",n:"Lilas",price:60,r:"común",v:"#A78BFA"},
+ {id:"title-imparable",slot:"title",n:"La Imparable",price:60,r:"común"},
+ {id:"title-reina",slot:"title",n:"Reina de la Forja",price:150,r:"raro"},
+ {id:"gift-none",slot:"gift",n:"Nada",price:0,r:"común"});
+/* un regalo por deporte: se gana con 5 días apuntando ese deporte */
+var GIFT28=[["baloncesto","gift-basket","Balón de baloncesto"],["futbol","gift-futbol","Balón de fútbol"],["voley","gift-voley","Balón de vóley"],
+ ["tenis","gift-tenis","Raqueta de tenis"],["padel","gift-padel","Pala de pádel"],["natacion","gift-gorro","Gorro y gafas de natación"],
+ ["piscina","gift-churro","Churro de piscina"],["correr","gift-dorsal","Dorsal de carrera"],["senderismo","gift-baston","Bastón de senderismo"],
+ ["bici","gift-casco","Casco de bici"],["yoga","gift-esterilla","Esterilla de yoga"],["escalada","gift-cuerda","Cuerda y magnesio"],
+ ["ballet","gift-tutu","Tutú"],["baile","gift-pompones","Pompones de baile"],["clase","gift-toalla","Toalla de gimnasio"]];
+var GIFTN28=5;
+GIFT28.forEach(([sp,id,n])=>ITEMS.push({id,slot:"gift",n,price:null,r:"deporte",sp28:sp}));
+SLOTS.splice(SLOTS.findIndex(s=>s[0]==="back"),0,["acc","Complementos"]);
+SLOTS.splice(SLOTS.findIndex(s=>s[0]==="title"),0,["gift","Regalos de deporte"]);
+EQ0.acc="acc-none";EQ0.gift="gift-none";
+var _look28=lookOf;
+lookOf=function(over){const lk=_look28(over);const e=Object.assign({},EQ0,S.equip,over||{});lk.acc=e.acc;lk.gift=e.gift;return lk;};
+function spName28(sp){const s=SPORTS.find(x=>x[0]===sp);return s?s[1]:sp;}
+function spCount28(){const n={};for(const [k,r] of Object.entries(S.days)){if(k>TK||!r||!r.acts)continue;
+  new Set(r.acts.map(a=>a.t)).forEach(t=>{n[t]=(n[t]||0)+1;});}return n;}
+var _comp28=compute;
+compute=function(){const c=_comp28();const n=spCount28();c.spc28=n;c.gifts28=GIFT28.filter(g=>(n[g[0]]||0)>=GIFTN28).map(g=>g[1]);
+  c.gifts28.forEach(id=>{if(!c.owned.has(id)){c.owned.add(id);c.items++;}});return c;};
+BADGES.push(["regalo28","Regalo deportivo","Practica 5 días un mismo deporte",c=>(c.gifts28||[]).length>=1],
+ ["regalo28b","Vestuario completo","Consigue 5 regalos de deporte",c=>(c.gifts28||[]).length>=5]);
+function giftLines28(a,b,lines){const nw=(a.gifts28||[]).filter(x=>!(b.gifts28||[]).includes(x));
+  nw.forEach(id=>{const g=GIFT28.find(x=>x[1]===id);lines.push(`${GIFTN28} días de ${spName28(g[0]).toLowerCase()}: te regalamos «${g[2]}». Póntelo en Botín → Regalos de deporte.`);});
+  return nw.length?"¡Regalo de deporte!":null;}
+function giftBtn28(it,c){const n=(c.spc28||{})[it.sp28]||0;return `${spName28(it.sp28)} · ${Math.min(n,GIFTN28)}/${GIFTN28}`;}
+/* progreso del regalo en la tarjeta de deportes */
+var _acts28=actsCard;
+actsCard=function(k,main){const h=_acts28(k,main);if(!main)return h;const n=spCount28();
+  const ts=[...new Set(((S.days[k]||{}).acts||[]).map(a=>a.t))].map(t=>GIFT28.find(g=>g[0]===t)).filter(Boolean);if(!ts.length)return h;
+  return h+`<div class="gift28">${ts.map(g=>{const v=Math.min(n[g[0]]||0,GIFTN28);return v>=GIFTN28?`<span>🎁 <b>${g[2]}</b> conseguido</span>`:`<span>🎁 ${spName28(g[0])}: ${v}/${GIFTN28} días para el regalo (${g[2].toLowerCase()})</span>`;}).join("")}</div>`;};
+
+/* ---------- dibujo: utilidades ---------- */
+var P28=(x,y)=>f1(x)+" "+f1(y);
+function fr28(h,s){const u=nrm(sub(h,s)),fw=[-u[1],u[0]];const T=(a,b)=>add(h,add(mul(fw,a),mul(u,b)));return {T,P:v=>f1(v[0])+" "+f1(v[1])};}
+function heart28(cx,cy,r,fill,st){return `<path d="M${P28(cx,cy+r*.9)} C${P28(cx-r*1.4,cy)} ${P28(cx-r*.9,cy-r*1.1)} ${P28(cx,cy-r*.35)} C${P28(cx+r*.9,cy-r*1.1)} ${P28(cx+r*1.4,cy)} ${P28(cx,cy+r*.9)} Z" fill="${fill}" stroke="${st||OUT}" stroke-width=".45" stroke-linejoin="round"/>`;}
+function star28(cx,cy,r,fill){return `<path d="M${P28(cx,cy-r)} L${P28(cx+r*.3,cy-r*.3)} L${P28(cx+r,cy)} L${P28(cx+r*.3,cy+r*.3)} L${P28(cx,cy+r)} L${P28(cx-r*.3,cy+r*.3)} L${P28(cx-r,cy)} L${P28(cx-r*.3,cy-r*.3)} Z" fill="${fill}"/>`;}
+function flower28(cx,cy,r,c){let g="";for(let i=0;i<5;i++){const a=i*Math.PI*2/5-Math.PI/2;g+=`<circle cx="${f1(cx+Math.cos(a)*r)}" cy="${f1(cy+Math.sin(a)*r)}" r="${f1(r*.8)}" fill="${c}" stroke="${OUT}" stroke-width=".35"/>`;}
+  return g+`<circle cx="${f1(cx)}" cy="${f1(cy)}" r="${f1(r*.55)}" fill="#F2C94C" stroke="${OUT}" stroke-width=".3"/>`;}
+function bow28(cx,cy,k,c){return `<path d="M${P28(cx,cy)} L${P28(cx-3*k,cy-2*k)} L${P28(cx-3*k,cy+2*k)} Z M${P28(cx,cy)} L${P28(cx+3*k,cy-2*k)} L${P28(cx+3*k,cy+2*k)} Z" fill="${c}" stroke="${OUT}" stroke-width=".5" stroke-linejoin="round"/><circle cx="${f1(cx)}" cy="${f1(cy)}" r="${f1(1*k)}" fill="${shade(c,-.15)}" stroke="${OUT}" stroke-width=".4"/>`;}
+var HAIRC28=()=>isF()?"#C2642F":"#7A4A2C";
+
+/* ---------- cabeza ---------- */
+var _head28=headAcc;
+headAcc=function(lk,h,s,front){const v=lk.head;const [x,y]=h;
+  if(front){
+    if(v==="head-lazo")return bow28(x+4.4,y-5.4,1,"#FF6FA5");
+    if(v==="head-diadema")return `<path d="M${P28(x-5.6,y+1.2)} Q${P28(x,y-13.4)} ${P28(x+5.6,y+1.2)}" fill="none" stroke="${OUT}" stroke-width="2.3" stroke-linecap="round"/><path d="M${P28(x-5.6,y+1.2)} Q${P28(x,y-13.4)} ${P28(x+5.6,y+1.2)}" fill="none" stroke="#C084FC" stroke-width="1.4" stroke-linecap="round"/>`+[-2.6,0,2.6].map(d=>`<circle cx="${f1(x+d)}" cy="${f1(y-5.9+Math.abs(d)*.35)}" r=".55" fill="#FFFFFF"/>`).join("");
+    if(v==="head-coletero")return `<path d="M${P28(x-1.6,y-6.3)} Q${P28(x-3.5,y-12.5)} ${P28(x+1,y-13.2)} Q${P28(x+5.5,y-12.6)} ${P28(x+5.2,y-7.2)} Q${P28(x+3.4,y-10.4)} ${P28(x+1.4,y-6.4)} Z" fill="${HAIRC28()}" stroke="${OUT}" stroke-width=".7" stroke-linejoin="round"/><ellipse cx="${f1(x)}" cy="${f1(y-6.6)}" rx="2.4" ry="1.3" fill="#F472B6" stroke="${OUT}" stroke-width=".5"/>`;
+    if(v==="head-flor")return flower28(x-4.4,y-4.6,1.25,"#FFFFFF")+`<circle cx="${f1(x-2.2)}" cy="${f1(y-5.8)}" r=".9" fill="#FF8FB8" stroke="${OUT}" stroke-width=".3"/>`;
+    if(v==="head-orejas")return [-1,1].map(d=>`<path d="M${P28(x+d*1.6,y-5.9)} L${P28(x+d*5.4,y-11.4)} L${P28(x+d*5.6,y-3.8)} Z" fill="#2A3040" stroke="${OUT}" stroke-width=".6" stroke-linejoin="round"/><path d="M${P28(x+d*3,y-6)} L${P28(x+d*4.9,y-9.2)} L${P28(x+d*5,y-5.4)} Z" fill="#FF9FC0"/>`).join("");
+    if(v==="head-tiara")return `<path d="M${P28(x-4.8,y-5.4)} L${P28(x-4.2,y-8.6)} L${P28(x-2.2,y-6.8)} L${P28(x,y-10.4)} L${P28(x+2.2,y-6.8)} L${P28(x+4.2,y-8.6)} L${P28(x+4.8,y-5.4)} Q${P28(x,y-6.8)} ${P28(x-4.8,y-5.4)} Z" fill="#E3E8F2" stroke="#8C97AB" stroke-width=".55" stroke-linejoin="round"/><circle cx="${f1(x)}" cy="${f1(y-7.6)}" r="1" fill="#FF4D8D" stroke="${OUT}" stroke-width=".3"/><circle cx="${f1(x-3.4)}" cy="${f1(y-6.7)}" r=".55" fill="#8FD3FF"/><circle cx="${f1(x+3.4)}" cy="${f1(y-6.7)}" r=".55" fill="#8FD3FF"/>`;
+  }else{const {T,P}=fr28(h,s);
+    if(v==="head-lazo"){const c=T(-3.8,4.8);return bow28(c[0],c[1],.9,"#FF6FA5");}
+    if(v==="head-diadema")return `<path d="M${P(T(-1.4,-.2))} Q${P(T(-.4,9.6))} ${P(T(3.8,4.4))}" fill="none" stroke="${OUT}" stroke-width="2.2" stroke-linecap="round"/><path d="M${P(T(-1.4,-.2))} Q${P(T(-.4,9.6))} ${P(T(3.8,4.4))}" fill="none" stroke="#C084FC" stroke-width="1.3" stroke-linecap="round"/>`;
+    if(v==="head-coletero"){const a=T(-4.8,4),b=T(-10.5,-3.5),c=T(-7,-6);return `<path d="M${P(T(-3.6,5.2))} Q${P(T(-11,6))} ${P(b)} Q${P(c)} ${P(T(-5,1.4))} Z" fill="${HAIRC28()}" stroke="${OUT}" stroke-width=".7" stroke-linejoin="round"/><circle cx="${f1(a[0])}" cy="${f1(a[1])}" r="1.5" fill="#F472B6" stroke="${OUT}" stroke-width=".5"/>`;}
+    if(v==="head-flor"){const c=T(-3.4,4.4);return flower28(c[0],c[1],1.15,"#FFFFFF");}
+    if(v==="head-orejas")return [[-2.8,0],[1.6,1]].map(([a,i])=>{const b0=T(a-1.6,5.2),tp=T(a,10.6),b1=T(a+1.8,5.6);return `<path d="M${P(b0)} L${P(tp)} L${P(b1)} Z" fill="#2A3040" stroke="${OUT}" stroke-width=".6" stroke-linejoin="round"/>`;}).join("");
+    if(v==="head-tiara"){const a=T(-2.6,5.6),b=T(0,9.2),c=T(2.6,5.8),m=T(0,6.4);return `<path d="M${P(a)} L${P(b)} L${P(c)} Q${P(m)} ${P(a)} Z" fill="#E3E8F2" stroke="#8C97AB" stroke-width=".55" stroke-linejoin="round"/><circle cx="${f1(T(0,7.2)[0])}" cy="${f1(T(0,7.2)[1])}" r=".8" fill="#FF4D8D"/>`;}
+  }
+  return _head28(lk,h,s,front);};
+
+/* ---------- cara y complementos ---------- */
+function face28(lk,h,s,front){const v=lk.face;const [x,y]=h;
+  if(front){
+    if(v==="face-pestanas")return `<g stroke="${OUT}" stroke-width=".45" stroke-linecap="round">`+[-1,1].map(d=>{const ex=x+d*2.1,ey=y+.6;return `<path d="M${P28(ex-d*.2,ey-.9)} l${f1(d*.9)} -.9 M${P28(ex+d*.5,ey-.7)} l${f1(d*1.1)} -.5 M${P28(ex+d*.8,ey-.3)} l${f1(d*1.1)} 0"/>`;}).join("")+`</g>`;
+    if(v==="face-colorete")return [-1,1].map(d=>`<circle cx="${f1(x+d*3.7)}" cy="${f1(y+2.5)}" r="1.35" fill="#FF5C8A" opacity=".55"/>`).join("")+`<path d="M${P28(x-1.4,y+3.3)} Q${P28(x-.7,y+2.6)} ${P28(x,y+3)} Q${P28(x+.7,y+2.6)} ${P28(x+1.4,y+3.3)} Q${P28(x,y+4.4)} ${P28(x-1.4,y+3.3)} Z" fill="#D6336C" stroke="${OUT}" stroke-width=".3"/>`;
+    if(v==="face-pecas")return [[-3.6,2],[-4.4,2.6],[-3,2.8],[3.6,2],[4.4,2.6],[3,2.8]].map(([a,b])=>`<circle cx="${f1(x+a)}" cy="${f1(y+b)}" r=".32" fill="#9A5B34"/>`).join("");
+    if(v==="face-corazon")return heart28(x-2.3,y+.6,1.7,"#FF4D8D")+heart28(x+2.3,y+.6,1.7,"#FF4D8D")+`<line x1="${f1(x-.8)}" y1="${f1(y+.2)}" x2="${f1(x+.8)}" y2="${f1(y+.2)}" stroke="${OUT}" stroke-width=".5"/>`;
+    if(v==="face-purpurina")return star28(x-4.2,y-.4,1.1,"#F2C94C")+star28(x+4.3,y+.2,.9,"#FF8FB8")+star28(x+3.2,y+3,.6,"#C084FC")+star28(x-3.4,y+3.1,.6,"#8FD3FF");
+  }else{const {T,P}=fr28(h,s);const e=T(3.7,.5);
+    if(v==="face-pestanas")return `<path d="M${P(T(3.2,1.4))} l${f1(T(4.4,2.4)[0]-T(3.2,1.4)[0])} ${f1(T(4.4,2.4)[1]-T(3.2,1.4)[1])} M${P(T(4,1.3))} l${f1(T(5.3,2)[0]-T(4,1.3)[0])} ${f1(T(5.3,2)[1]-T(4,1.3)[1])}" stroke="${OUT}" stroke-width=".45" stroke-linecap="round"/>`;
+    if(v==="face-colorete"){const c=T(2.4,-1.2),l=T(5.4,-2.6);return `<circle cx="${f1(c[0])}" cy="${f1(c[1])}" r="1.3" fill="#FF5C8A" opacity=".55"/><circle cx="${f1(l[0])}" cy="${f1(l[1])}" r=".75" fill="#D6336C"/>`;}
+    if(v==="face-pecas")return [[2,-1],[2.8,-.6],[2.4,-1.8]].map(([a,b])=>{const p=T(a,b);return `<circle cx="${f1(p[0])}" cy="${f1(p[1])}" r=".32" fill="#9A5B34"/>`;}).join("");
+    if(v==="face-corazon"){const bk=T(-.8,.9);return `<line x1="${f1(bk[0])}" y1="${f1(bk[1])}" x2="${f1(e[0])}" y2="${f1(e[1])}" stroke="${OUT}" stroke-width=".8"/>`+heart28(e[0],e[1],1.8,"#FF4D8D");}
+    if(v==="face-purpurina"){const a=T(2,2.4),b=T(1.6,-1.6);return star28(a[0],a[1],1,"#F2C94C")+star28(b[0],b[1],.7,"#FF8FB8");}
+  }
+  return null;}
+function acc28(lk,h,s,front){const v=lk.acc;if(!v||v==="acc-none")return "";const [x,y]=h;
+  if(front){const ear=[[x-5.6,y+1.6],[x+5.6,y+1.6]];
+    if(v==="acc-aros")return ear.map(([a,b])=>`<circle cx="${f1(a)}" cy="${f1(b+1.8)}" r="1.35" fill="none" stroke="#B5860F" stroke-width="1.1"/><circle cx="${f1(a)}" cy="${f1(b+1.8)}" r="1.35" fill="none" stroke="#F2C94C" stroke-width=".6"/>`).join("");
+    if(v==="acc-perlas")return ear.map(([a,b])=>`<circle cx="${f1(a)}" cy="${f1(b+1)}" r=".85" fill="#FFFFFF" stroke="#9AA3B2" stroke-width=".35"/>`).join("");
+    if(v==="acc-estrella")return ear.map(([a,b])=>`<line x1="${f1(a)}" y1="${f1(b+.6)}" x2="${f1(a)}" y2="${f1(b+2)}" stroke="#B5860F" stroke-width=".4"/>`+star28(a,b+3,1.4,"#F2C94C")).join("");
+    const [nx,ny]=s;const w=isF()?2.8:3.4;
+    if(v==="acc-collar")return `<path d="M${P28(nx-w,ny-2.6)} Q${P28(nx,ny+2.4)} ${P28(nx+w,ny-2.6)}" fill="none" stroke="#B5860F" stroke-width=".7"/>`+heart28(nx,ny+.6,1.1,"#FF4D8D");
+    if(v==="acc-perlas2"){let g="";for(let i=0;i<=8;i++){const t=i/8,px=(1-t)*(1-t)*(nx-w)+2*t*(1-t)*nx+t*t*(nx+w),py=(1-t)*(1-t)*(ny-2.6)+2*t*(1-t)*(ny+2.4)+t*t*(ny-2.6);g+=`<circle cx="${f1(px)}" cy="${f1(py)}" r=".6" fill="#FFFFFF" stroke="#9AA3B2" stroke-width=".3"/>`;}return g;}
+    return "";}
+  const {T,P}=fr28(h,s);const ea=T(-.8,-.4);
+  if(v==="acc-aros")return `<circle cx="${f1(ea[0])}" cy="${f1(ea[1]-.4)}" r="1.3" fill="none" stroke="#D9A21B" stroke-width=".9"/>`;
+  if(v==="acc-perlas")return `<circle cx="${f1(ea[0])}" cy="${f1(ea[1]+.6)}" r=".85" fill="#FFFFFF" stroke="#9AA3B2" stroke-width=".35"/>`;
+  if(v==="acc-estrella")return star28(ea[0],ea[1]-1,1.3,"#F2C94C");
+  const nk=lerp(s,h,.12),fw=nrm(sub(T(1,0),h));const c=add(nk,mul(fw,2.4));
+  if(v==="acc-collar")return heart28(c[0],c[1],1,"#FF4D8D");
+  if(v==="acc-perlas2")return [0,1,2].map(i=>{const p=add(nk,mul(fw,1+i*.9));return `<circle cx="${f1(p[0])}" cy="${f1(p[1]+i*.3)}" r=".55" fill="#FFFFFF" stroke="#9AA3B2" stroke-width=".3"/>`;}).join("");
+  return "";}
+var _face28=faceAcc;
+faceAcc=function(lk,h,s,front){const f=face28(lk,h,s,front);return (f===null?_face28(lk,h,s,front):f)+acc28(lk,h,s,front);};
+
+/* ---------- espalda ---------- */
+var _hb28=heroBack25;
+heroBack25=function(lk,sh,sy,nk,front){const b=lk.back;let g="";
+  if(b==="back-mochflor"){g=_hb28(Object.assign({},lk,{back:"back-mochila"}),sh,sy,nk,front).split("#D9772B").join("#F9A8D4");if(front)g+=flower28(50-(sh-2.6),42.5,1,"#FFFFFF");}
+  else if(b==="back-hada")g=front?"":_hb28(Object.assign({},lk,{back:"back-alas"}),sh,sy,nk,front).split("#F3EEDD").join("#E9D5FF").split("#B9AE8C").join("#A78BFA").replace("<g ","<g opacity=\".88\" ");
+  else if(b==="back-bandolera")g=front?L1([50-sh+2.2,sy-1],[50+sh+1.2,46],2.6,OUT)+L1([50-sh+2.2,sy-1],[50+sh+1.2,46],1.5,"#8B5E3C")+`<rect x="${f1(50+sh-2.2)}" y="45" width="7.4" height="6" rx="1.6" fill="#E07A9A" stroke="${OUT}" stroke-width=".7"/><circle cx="${f1(50+sh+1.5)}" cy="47.4" r=".6" fill="#F2C94C"/>`:"";
+  else g=_hb28(lk,sh,sy,nk,front);
+  return g+(front?"":gift28(lk,"back"));};
+var _ba28=backAcc0;
+backAcc0=function(lk,p){const b=lk.back;
+  if(b==="back-mochflor")return _ba28(Object.assign({},lk,{back:"back-mochila"}),p).split("#D9772B").join("#F9A8D4").split("#A9551A").join("#E26FA4");
+  if(b==="back-hada")return _ba28(Object.assign({},lk,{back:"back-alas"}),p).split("#F3EEDD").join("#E9D5FF").split("#B9AE8C").join("#A78BFA");
+  if(b==="back-bandolera"){const u=nrm(sub(p.p,p.s)),n=[-u[1],u[0]];const a=add(lerp(p.s,p.p,.8),mul(n,3.2));return `<rect x="${f1(a[0]-3)}" y="${f1(a[1]-2.6)}" width="6" height="5.2" rx="1.4" fill="#E07A9A" stroke="${OUT}" stroke-width=".7"/>`;}
+  return _ba28(lk,p);};
+
+/* ---------- regalos de deporte (solo en el atleta de frente) ---------- */
+function hands28(lk){const st=Math.max(0,Math.min(4,lk.build|0)),B=isF()?HB25.f:HB25.m,sh=B.sh[st],wa=B.wa[st],sy=st===0?29.5:28;
+  return [-1,1].map(d=>{const flex=st===4||(st===3&&d>0);return st<=1?[50+d*(sh+2+st),sy+24.5]:!flex?[50+d*(wa+2.4),45]:[50+d*(sh+6.8),sy-10];});}
+function ball28(cx,cy,r,kind){const c=`<circle cx="${f1(cx)}" cy="${f1(cy)}" r="${r}" fill="${kind==="basket"?"#F28C38":kind==="voley"?"#FFF6D6":"#FFFFFF"}" stroke="${OUT}" stroke-width=".8"/>`;
+  if(kind==="basket")return c+`<g fill="none" stroke="${OUT}" stroke-width=".5"><line x1="${f1(cx-r)}" y1="${f1(cy)}" x2="${f1(cx+r)}" y2="${f1(cy)}"/><line x1="${f1(cx)}" y1="${f1(cy-r)}" x2="${f1(cx)}" y2="${f1(cy+r)}"/><path d="M${P28(cx-r*.7,cy-r*.7)} Q${P28(cx-r*.2,cy)} ${P28(cx-r*.7,cy+r*.7)} M${P28(cx+r*.7,cy-r*.7)} Q${P28(cx+r*.2,cy)} ${P28(cx+r*.7,cy+r*.7)}"/></g>`;
+  if(kind==="voley")return c+`<g fill="none" stroke="#2F6FD6" stroke-width=".7"><path d="M${P28(cx-r*.9,cy-r*.3)} Q${P28(cx,cy-r*.2)} ${P28(cx+r*.4,cy-r*.9)}"/><path d="M${P28(cx-r*.5,cy+r*.85)} Q${P28(cx-r*.1,cy)} ${P28(cx+r*.95,cy+r*.1)}"/></g>`;
+  let g=c+`<path d="M${P28(cx,cy-r*.45)} L${P28(cx+r*.43,cy-r*.14)} L${P28(cx+r*.27,cy+r*.36)} L${P28(cx-r*.27,cy+r*.36)} L${P28(cx-r*.43,cy-r*.14)} Z" fill="${OUT}"/>`;
+  return g+`<g stroke="${OUT}" stroke-width=".45"><line x1="${f1(cx)}" y1="${f1(cy-r*.45)}" x2="${f1(cx)}" y2="${f1(cy-r)}"/><line x1="${f1(cx+r*.43)}" y1="${f1(cy-r*.14)}" x2="${f1(cx+r*.95)}" y2="${f1(cy-r*.3)}"/><line x1="${f1(cx-r*.43)}" y1="${f1(cy-r*.14)}" x2="${f1(cx-r*.95)}" y2="${f1(cy-r*.3)}"/></g>`;}
+function gift28(lk,layer){const v=lk.gift;if(!v||v==="gift-none")return "";
+  const st=Math.max(0,Math.min(4,lk.build|0)),fem=isF(),B=fem?HB25.f:HB25.m,sh=B.sh[st],hp=B.hp[st],nk=B.nk[st],sy=st===0?29.5:28,hy=st===0?15:14;
+  if(layer==="back"){
+    if(v==="gift-esterilla")return `<g transform="rotate(-28 50 ${f1(sy+8)})"><rect x="25" y="${f1(sy+5)}" width="48" height="6.6" rx="3.3" fill="#8B5CF6" stroke="${OUT}" stroke-width=".8"/><ellipse cx="72.2" cy="${f1(sy+8.3)}" rx="1.6" ry="3.3" fill="#C4B5FD" stroke="${OUT}" stroke-width=".6"/></g>`;
+    return "";}
+  if(v==="gift-basket")return ball28(67,90.2,4.6,"basket");
+  if(v==="gift-futbol")return ball28(67,90.2,4.6,"futbol");
+  if(v==="gift-voley")return ball28(67,90.2,4.6,"voley");
+  if(v==="gift-tenis")return `<line x1="70.5" y1="94.6" x2="67.4" y2="82.5" stroke="${OUT}" stroke-width="2.2" stroke-linecap="round"/><line x1="70.5" y1="94.6" x2="67.4" y2="82.5" stroke="#2A3040" stroke-width="1.3" stroke-linecap="round"/><ellipse cx="66" cy="75.5" rx="4.2" ry="6" transform="rotate(-14 66 75.5)" fill="rgba(255,255,255,.35)" stroke="#E2553B" stroke-width="1.3"/><path d="M63.2 72 L68.8 79 M62.6 75.6 L68.4 75.4 M64.4 70.4 L66.2 81" stroke="#9AA3B2" stroke-width=".35"/><circle cx="72" cy="92.6" r="2" fill="#D7F542" stroke="${OUT}" stroke-width=".5"/>`;
+  if(v==="gift-padel")return `<line x1="70.5" y1="94.6" x2="68" y2="85" stroke="${OUT}" stroke-width="2.4" stroke-linecap="round"/><line x1="70.5" y1="94.6" x2="68" y2="85" stroke="#2A3040" stroke-width="1.5" stroke-linecap="round"/><path d="M66.6 85.6 Q61.2 82 62 75 Q63 69.6 67.6 70.2 Q72 71.2 71 77 Q70.2 83 66.6 85.6 Z" fill="#1E9E8F" stroke="${OUT}" stroke-width=".8"/>`+[[65.4,74.5],[67.6,75],[65,77.6],[67.4,78.2],[66.4,80.8]].map(([a,b])=>`<circle cx="${a}" cy="${b}" r=".55" fill="${OUT}" opacity=".55"/>`).join("");
+  if(v==="gift-churro")return `<rect x="65" y="44" width="5.4" height="50.6" rx="2.7" fill="#F2C94C" stroke="${OUT}" stroke-width=".8"/>`+[52,62,72,82].map(y=>`<line x1="65.6" y1="${y}" x2="69.8" y2="${y}" stroke="#D9A21B" stroke-width=".6"/>`).join("");
+  if(v==="gift-baston")return `<line x1="31" y1="94.6" x2="32.6" y2="50" stroke="${OUT}" stroke-width="2.2" stroke-linecap="round"/><line x1="31" y1="94.6" x2="32.6" y2="50" stroke="#9AA3B2" stroke-width="1.2" stroke-linecap="round"/><rect x="31" y="49" width="3.4" height="6.5" rx="1.2" fill="#2A3040" stroke="${OUT}" stroke-width=".5"/><line x1="31" y1="94.6" x2="31" y2="92" stroke="#2A3040" stroke-width="1.5"/>`;
+  if(v==="gift-gorro")return `<path d="M${P28(44.4,hy+.4)} Q${P28(44.2,hy-7.6)} ${P28(50,hy-7.8)} Q${P28(55.8,hy-7.6)} ${P28(55.6,hy+.4)} Q${P28(50,hy-2.8)} ${P28(44.4,hy+.4)} Z" fill="#2F80ED" stroke="${OUT}" stroke-width=".7" stroke-linejoin="round"/><path d="M${P28(47,hy-6.6)} Q${P28(50,hy-7.4)} ${P28(53,hy-6.6)}" stroke="#8FC1FF" stroke-width=".8" fill="none" stroke-linecap="round"/>`+[-1,1].map(d=>`<ellipse cx="${f1(50+d*2.2)}" cy="${f1(hy-2.6)}" rx="1.6" ry="1.1" fill="#8FD3FF" stroke="${OUT}" stroke-width=".55"/>`).join("")+`<line x1="49.4" y1="${f1(hy-2.6)}" x2="50.6" y2="${f1(hy-2.6)}" stroke="${OUT}" stroke-width=".5"/>`;
+  if(v==="gift-casco")return `<path d="M${P28(43.6,hy-1)} Q${P28(43.4,hy-9.4)} ${P28(50,hy-9.6)} Q${P28(56.6,hy-9.4)} ${P28(56.4,hy-1)} L${P28(54.6,hy-2.2)} Q${P28(50,hy-4.2)} ${P28(45.4,hy-2.2)} Z" fill="#18A36A" stroke="${OUT}" stroke-width=".7" stroke-linejoin="round"/>`+[-2.6,0,2.6].map(d=>`<path d="M${P28(50+d,hy-8.4)} L${P28(50+d*1.25,hy-5)}" stroke="#0B5E3D" stroke-width="1" stroke-linecap="round"/>`).join("")+`<path d="M${P28(44.6,hy-1.6)} L${P28(46,hy+4)} M${P28(55.4,hy-1.6)} L${P28(54,hy+4)}" stroke="${OUT}" stroke-width=".5" fill="none"/>`;
+  if(v==="gift-dorsal")return `<rect x="45.2" y="${f1(sy+8.6)}" width="9.6" height="7" rx=".8" fill="#FFFFFF" stroke="${OUT}" stroke-width=".6"/><text x="50" y="${f1(sy+14)}" text-anchor="middle" font-size="4.6" font-weight="800" fill="#E2553B" font-family="system-ui,sans-serif">26</text><circle cx="45.9" cy="${f1(sy+9.3)}" r=".3" fill="${OUT}"/><circle cx="54.1" cy="${f1(sy+9.3)}" r=".3" fill="${OUT}"/>`;
+  if(v==="gift-toalla")return [-1,1].map(d=>`<path d="M${P28(50+d*(nk-.2),sy-3)} Q${P28(50+d*(nk+3),sy-2)} ${P28(50+d*(nk+2.6),sy+3)} L${P28(50+d*(nk+2.2),sy+12)} L${P28(50+d*(nk-.6),sy+12)} L${P28(50+d*(nk-.4),sy)} Z" fill="#F4F6FA" stroke="${OUT}" stroke-width=".6" stroke-linejoin="round"/><line x1="${f1(50+d*(nk-.5))}" y1="${f1(sy+10.4)}" x2="${f1(50+d*(nk+2.3))}" y2="${f1(sy+10.4)}" stroke="#2F80ED" stroke-width=".9"/>`).join("");
+  if(v==="gift-cuerda")return L1([50-sh+1.6,sy-.6],[50+hp+.6,51],3.2,OUT)+L1([50-sh+1.6,sy-.6],[50+hp+.6,51],2.2,"#FF7A1A")+`<path d="M${P28(50-sh+1.6,sy-.6)} L${P28(50+hp+.6,51)}" stroke="#FFFFFF" stroke-width=".6" stroke-dasharray="1.2 1.6"/><rect x="${f1(50-hp-2.6)}" y="49.6" width="5" height="5.4" rx="1.4" fill="#2A3040" stroke="${OUT}" stroke-width=".6"/><path d="M${P28(50-hp-2.4,50.2)} q2.3 -1.3 4.6 0" fill="#FFFFFF" opacity=".85"/>`;
+  if(v==="gift-tutu"){let g="";for(const [w,y,c] of [[hp+5.5,58.4,"#F7A8C8"],[hp+4,57.2,"#FBC7DC"]]){let d=`M${P28(50-hp-.6,51.2)} L${P28(50+hp+.6,51.2)} L${P28(50+w,y)}`;const n=8;for(let i=n;i>=0;i--){const x=50-w+2*w*i/n;d+=` L${P28(x,y+(i%2?1.4:0))}`;}g+=`<path d="${d} Z" fill="${c}" stroke="${OUT}" stroke-width=".55" stroke-linejoin="round"/>`;}
+    return g+`<rect x="${f1(50-hp-.6)}" y="50.4" width="${f1(2*hp+1.2)}" height="1.8" rx=".8" fill="#F472B6" stroke="${OUT}" stroke-width=".45"/>`;}
+  if(v==="gift-pompones")return hands28(lk).map(([a,b],i)=>{let g="";for(let j=0;j<9;j++){const an=j*Math.PI*2/9;g+=`<line x1="${f1(a)}" y1="${f1(b)}" x2="${f1(a+Math.cos(an)*3.6)}" y2="${f1(b+Math.sin(an)*3.6)}" stroke="${j%2?"#FF6FA5":"#F2C94C"}" stroke-width="1.5" stroke-linecap="round"/>`;}return g;}).join("");
+  return "";}
+var _hf28=heroFig25;
+heroFig25=function(lk){const s=_hf28(lk);const g=gift28(lk,"front");if(!g)return s;const i=s.lastIndexOf("</g>");return s.slice(0,i)+g+s.slice(i);};
+
+/* ---------- salud: días de reposo por fisio o médico ---------- */
+var MEDW28={fisio:"fisio",medico:"médico",otro:"profesional"};
+function medList28(){return Array.isArray(S.med28)?S.med28:(S.med28=[]);}
+function medOf28(k){for(const m of medList28())if(k>=m.from&&k<=m.to)return m;return null;}
+function medDay28(k){const m=medOf28(k);if(!m)return null;const r=S.days[k];if(r&&(r.done||r.mode))return null;return m;}
+var _plan28=planId;
+planId=function(k){return medDay28(k)?"R":_plan28(k);};
+var _bs28=baseSess0;
+baseSess0=function(k){const m=medDay28(k);if(!m)return _bs28(k);
+  return Object.assign({},SESS.R,{name:"Reposo médico",sub:`Recomendado por tu ${MEDW28[m.who]||"profesional"}${m.why?" · "+m.why:""}`,items:[["paseo",1,"solo si te lo permiten"]],dur:"recuperación",med28:true});};
+function med28Html(k,ss){const m=medDay28(k);
+  if(m){const n=Math.round((fromKey(m.to)-fromKey(m.from))/864e5)+1,i=Math.round((fromKey(k)-fromKey(m.from))/864e5)+1;
+    return `<div class="med28"><div class="mh"><span class="mi" aria-hidden="true">🩺</span><div><div class="eyebrow">Reposo médico · día ${i} de ${n}</div><b>Hoy toca recuperarse</b></div></div>
+     <p class="small" style="margin:0">Del ${fmtD(m.from)} al ${fmtD(m.to)}, por recomendación de tu ${MEDW28[m.who]||"profesional"}${m.why?` (${esc(m.why)})`:""}. Estos días cuentan como descanso: no rompen la racha y la semana pide menos sesiones.</p>
+     <div class="actions"><button class="btn ghost" type="button" data-med28="edit" data-mk="${m.id}">Cambiar fechas</button><button class="btn ghost" type="button" data-med28="alta" data-mk="${m.id}" data-day="${k}">Ya tengo el alta</button></div></div>`;}
+  if(k<TK)return "";
+  return `<button type="button" class="linkb med28l" data-med28="new" data-day="${k}">🩺 ¿Fisio o médico te ha mandado reposo?</button>`;}
+function openMed28(id,day){const L=medList28();const cur=L.find(m=>m.id===id);
+  const o=cur?Object.assign({},cur):{from:day||TK,to:key(addDays(fromKey(day||TK),2)),who:"fisio",why:""};
+  const list=L.filter(m=>m.to>=TK&&m.id!==id);
+  const html=`<p class="note" style="margin:0">Marca los días que no debes entrenar. La app los cuenta como descanso: la racha sigue viva y la semana pide menos sesiones.</p>
+   <div class="med28f"><label>Desde<input type="date" data-mf="from" value="${o.from}"></label><label>Hasta (incluido)<input type="date" data-mf="to" value="${o.to}"></label></div>
+   <div class="seg" role="group" aria-label="Quién lo recomienda">${Object.entries({fisio:"Fisio",medico:"Médico",otro:"Otro"}).map(([v,l])=>`<button type="button" data-mw="${v}" aria-pressed="${o.who===v}">${l}</button>`).join("")}</div>
+   <label class="med28w">Motivo (opcional)<input type="text" maxlength="40" data-mf="why" value="${esc(o.why||"")}" placeholder="Ej.: esguince de tobillo"></label>
+   <p class="small" style="margin:0">Si hay días ya entrenados en ese periodo, se quedan como están.</p>
+   <div class="actions"><button class="btn" type="button" data-msave>Guardar reposo</button>${cur?`<button class="btn ghost" type="button" data-mdel>Quitar este reposo</button>`:""}</div>
+   ${list.length?`<div class="eyebrow">Otros reposos</div>${list.map(m=>`<div class="small">${fmtD(m.from)} – ${fmtD(m.to)} · ${MEDW28[m.who]}${m.why?" · "+esc(m.why):""}</div>`).join("")}`:""}`;
+  openSheet("Salud","Reposo médico",html,(ov,close)=>{
+    ov.querySelectorAll("[data-mw]").forEach(b=>b.onclick=()=>{o.who=b.dataset.mw;ov.querySelectorAll("[data-mw]").forEach(x=>x.setAttribute("aria-pressed",x===b));});
+    ov.querySelector("[data-msave]").onclick=()=>{const f=ov.querySelector('[data-mf="from"]').value,t=ov.querySelector('[data-mf="to"]').value;
+      if(!f||!t){toast("Pon las dos fechas");return;}const a=f<=t?f:t,z=f<=t?t:f;
+      if((fromKey(z)-fromKey(a))/864e5>90){toast("Máximo 90 días seguidos");return;}
+      const before=compute();const m=cur||{id:"m"+Date.now().toString(36)};Object.assign(m,{from:a,to:z,who:o.who,why:ov.querySelector('[data-mf="why"]').value.trim().slice(0,40)});
+      if(!cur)L.push(m);save();close();react(before,compute(),{});toast("Reposo guardado: esos días cuentan como descanso");render();};
+    const d=ov.querySelector("[data-mdel]");if(d)d.onclick=()=>{S.med28=L.filter(m=>m!==cur);save();close();toast("Reposo quitado");render();};});}
+function medAlta28(id,day){const L=medList28();const m=L.find(x=>x.id===id);if(!m)return;
+  if(day<=m.from)S.med28=L.filter(x=>x!==m);else m.to=key(addDays(fromKey(day),-1));save();toast((isF()?"¡Bienvenida":"¡Bienvenido")+" de vuelta! Ve poco a poco los primeros días.");render();}
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-med28]");if(!b)return;const a=b.dataset.med28;
+  if(a==="new")openMed28(null,b.dataset.day);else if(a==="edit")openMed28(b.dataset.mk);else if(a==="alta")medAlta28(b.dataset.mk,b.dataset.day);});
+function zoom28(slot,svg){return /^(head|face|acc)$/.test(slot)?svg.replace(/viewBox="[^"]*"/,'viewBox="31 -5 38 44"'):svg;}
+
 /* sesiones sin bici */
 SESS.W={id:"W",name:"Cardio a pie",sub:"Caminata rápida + movilidad",dur:"45-60 min",rest:60,kind:"fuerza",sh:"Pie",items:[["caminata",1,"40-50 min a paso rápido"],["movilidad",1,"10 min"]],str:STR.S.slice(),warm:[]};
 SESS.Y={id:"Y",name:"HIIT sin material",sub:"Intervalos con tu cuerpo",dur:"30 min",kind:"circuito",sh:"HIIT",items:[["burpee",5,"30 s"],["sentsalto",5,"30 s"],["mountain",5,"30 s"],["rodillas",5,"30 s"],["plancha",5,"30 s"]],str:STR.H.slice(),warm:WARM.C.slice()};
@@ -3740,7 +3969,7 @@ function openChest(ch){
 const rint=n=>Math.floor(Math.random()*n);
 const pick=a=>a[rint(a.length)];
 function roll(type,owned){
-  const pool=ITEMS.filter(i=>i.slot!=="cons"&&i.price!==0&&!i.season&&!owned.has(i.id));
+  const pool=ITEMS.filter(i=>i.slot!=="cons"&&i.price!==0&&!i.season&&!i.sp28&&!owned.has(i.id));
   let coins,item=null,freeze=false;
   if(type==="epico"){coins=50+rint(51);const ep=pool.filter(i=>i.r==="épico");const src=ep.length&&Math.random()<.6?ep:pool;if(src.length)item=pick(src).id;else coins+=80;freeze=Math.random()<.35;}
   else{coins=15+rint(21);const p2=pool.filter(i=>i.r!=="épico");if(p2.length&&Math.random()<.3)item=pick(p2).id;else if(!p2.length)coins+=30;freeze=Math.random()<.08;}
@@ -3833,7 +4062,7 @@ function viewHoy(c){
       <div class="sets">${dots}${kg}</div>${repsRow}${sg}${warm27(id,sel,ss)}</div>`;}).join("");
   const canFinish=!done&&ss.kind!=="descanso"&&!(ss.mode==="pasos")&&(ss.kind==="deporte"?actMin(r)>=20:n>=Math.ceil(required(ss)*.5));
   const pid=planId(sel),tid=tplId(sel);
-  const chg=done?"":`<div class="chg"><button type="button" class="linkb" data-act="plan">⇄ Cambiar sesión</button>${pid!==tid?`<span>Cambiada · en tu semana tocaba ${(SESS[tid]||SESS[DEFW[selD.getDay()]]).name}</span>`:`<span>Otra rutina, deporte, natación, gomas…</span>`}</div>`;
+  const chg=done||medDay28(sel)?"":`<div class="chg"><button type="button" class="linkb" data-act="plan">⇄ Cambiar sesión</button>${pid!==tid?`<span>Cambiada · en tu semana tocaba ${(SESS[tid]||SESS[DEFW[selD.getDay()]]).name}</span>`:`<span>Otra rutina, deporte, natación, gomas…</span>`}</div>`;
   const mainList=ss.mode==="pasos"?stepsCard(sel,true):ss.kind==="deporte"?(sel<=TK?actsCard(sel,true):""):`<div class="list">${items}</div>`;
   return `<div style="display:flex;flex-direction:column;gap:16px">
    <div class="weeknav"><button type="button" data-wk="-7" aria-label="Semana anterior">‹ Anterior</button><span class="eyebrow">${pw>=1?`Semana ${wc} · ciclo ${cy}`:"Semana previa"}</span><button type="button" data-wk="7" aria-label="Semana siguiente">Siguiente ›</button></div>
@@ -3847,7 +4076,7 @@ function viewHoy(c){
      <div>${done?`<span class="tag done">${ss.mode==="pasos"?"Cambiada por pasos":ss.mode?"Exprés hecha":"Completada"}</span>`:ss.mode==="pasos"?`<span class="tag num" style="font-size:14px">${fmtN(stepsOf(sel))}/${fmtN(S.cfg.swapGoal)} pasos</span>`:ss.kind==="deporte"?`<span class="tag num" style="font-size:14px">${actMin(r)}/20 min</span>`:ss.kind!=="descanso"?`<span class="tag num" style="font-size:14px">${n}/${required(ss)} ${ss.kind==="circuito"?"bloques":"series"}</span>`:""}</div></div>
    ${chg}${placeHtml26(sel,ss,done)}
    ${ss.adapted?`<p class="small adn">${placeOf26(sel)==="gym"?"Adaptada a tu gym: algunos ejercicios se han cambiado por su versión con máquina, polea o barra, o por otros que trabajan lo mismo.":"Adaptada a tu material de casa: los ejercicios para los que te falta algo se han cambiado por otros que trabajan lo mismo."}</p>`:""}
-   ${modeHtml(sel,bs,ss,done)}
+   ${med28Html(sel,ss)}${modeHtml(sel,bs,ss,done)}
    ${sel<=TK?painHtml(ss,sel,done):""}
    ${frz}${ss.mode==="pasos"?"":misHtml}${sel===TK?rescueHtml(c)+hoy21(c):""}${done&&ss.kind!=="descanso"&&sel<=TK?rpeHtml(r):""}
    <p class="note">${note}</p>
@@ -3902,12 +4131,13 @@ function viewBotin(c){
     const its=ITEMS.filter(i=>i.slot===slot&&(!i.season||c.owned.has(i.id)));
     return `<div class="lib-group"><div class="eyebrow">${lbl}</div><div class="shop">${its.map(it=>{
       const own=slot==="cons"?false:c.owned.has(it.id);const eq=S.equip[slot]===it.id;
-      const pv=slot==="title"?`<div class="ttl">${it.id==="title-none"?"—":"«"+it.n+"»"}</div>`:slot==="cons"?(it.id==="freeze"?freezeSvg:chestSvg(it.id==="chest-epico"?"epico":"normal")):avatarSvg({[slot]:it.id},it.n);
+      const pv=slot==="title"?`<div class="ttl">${it.id==="title-none"?"—":"«"+it.n+"»"}</div>`:slot==="cons"?(it.id==="freeze"?freezeSvg:chestSvg(it.id==="chest-epico"?"epico":"normal")):zoom28(slot,avatarSvg({[slot]:it.id},it.n));
       const locked=it.lv&&c.L<it.lv&&!own;let btn;
       if(locked)btn=`<button class="btn ghost" type="button" disabled>Nivel ${it.lv}</button>`;
       else if(slot==="cons")btn=`<button class="btn" type="button" data-buy="${it.id}" ${c.coins<it.price?"disabled":""}>${it.id==="freeze"?"Comprar":"Abrir"} · ${it.price}</button>`;
       else if(eq)btn=`<button class="btn ghost" type="button" disabled>Equipado</button>`;
       else if(own)btn=`<button class="btn ghost" type="button" data-equip="${it.id}">Equipar</button>`;
+      else if(it.sp28)btn=`<button class="btn ghost" type="button" disabled>${giftBtn28(it,c)}</button>`;
       else if(it.price==null)btn=`<button class="btn ghost" type="button" disabled>Solo en cofres</button>`;
       else btn=`<button class="btn" type="button" data-buy="${it.id}" ${c.coins<it.price?"disabled":""}>Comprar · ${it.price}</button>`;
       return `<div class="item${eq?" eq":""}"><div class="pv">${pv}</div><b>${it.n}</b><span class="rar ${it.r}">${it.r}${it.season?" · "+MESES[it.season-1]:""}${it.id==="freeze"?` · tienes ${c.freezes}`:""}</span>${btn}</div>`;}).join("")}</div></div>`;}).join("");
@@ -3919,7 +4149,7 @@ function viewBotin(c){
    <div class="sec-title"><h2 style="font-size:24px">Cofres</h2><span class="eyebrow">${c.pending.length} sin abrir</span></div>
    ${chests}
    <div class="sec-title"><h2 style="font-size:24px">Tienda</h2><span class="coins">${coinI}${c.coins}</span></div>
-   <p class="note" style="margin:0">Lo que equipas aparece en tu atleta, también en las animaciones de los tutoriales. Los objetos épicos solo salen en cofres; algunos objetos piden nivel. Si ya lo tienes todo, los cofres dan más monedas.</p>
+   <p class="note" style="margin:0">Lo que equipas aparece en tu atleta, también en las animaciones de los tutoriales. Los objetos épicos solo salen en cofres; algunos objetos piden nivel. Los regalos de deporte se ganan apuntando 5 días un mismo deporte. Si ya lo tienes todo, los cofres dan más monedas.</p>
    ${shop}</div>`;
 }
 function viewLogros(c){
