@@ -3783,6 +3783,179 @@ function tidy80(root,cur){
     root.querySelectorAll(":scope>p.note").forEach(p=>{const d=document.createElement("details");d.className="how80";d.innerHTML=`<summary>¿Cómo funciona?</summary>`;p.before(d);d.appendChild(p);});}
 }
 
+/* v81 (1.8.1): botín redibujado — cabeza, cara, complementos, estampados, zapatillas y pesas */
+const mix81=(a,b,t)=>{const p=h=>[16,8,0].map(i=>(parseInt(h.slice(1),16)>>i)&255);const A=p(a),B=p(b);return "#"+A.map((v,i)=>Math.round(v+(B[i]-v)*t).toString(16).padStart(2,"0")).join("");};
+const Q81=(x,y)=>f1(x)+" "+f1(y);
+let N81=0,LAST81={};
+function rnd81(seed){let s=0;for(const ch of seed)s=(s*31+ch.charCodeAt(0))>>>0;return ()=>((s=(s*1664525+1013904223)>>>0)/4294967296);}
+function star81(cx,cy,r,fill,sw){return `<path d="M${Q81(cx,cy-r)} Q${Q81(cx+r*.18,cy-r*.18)} ${Q81(cx+r,cy)} Q${Q81(cx+r*.18,cy+r*.18)} ${Q81(cx,cy+r)} Q${Q81(cx-r*.18,cy+r*.18)} ${Q81(cx-r,cy)} Q${Q81(cx-r*.18,cy-r*.18)} ${Q81(cx,cy-r)} Z" fill="${fill}"${sw?` stroke="${OUT}" stroke-width="${sw}" stroke-linejoin="round"`:""}/>`;}
+function star5_81(cx,cy,r,fill,st,sw){let d="";for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,k=i%2?r*.45:r;d+=(i?"L":"M")+Q81(cx+Math.cos(a)*k,cy+Math.sin(a)*k)+" ";}return `<path d="${d}Z" fill="${fill}" stroke="${st||OUT}" stroke-width="${sw||.4}" stroke-linejoin="round"/>`;}
+function bow81(cx,cy,k,c){const dk=shade(c,-.28);const loop=d=>`<path d="M${Q81(cx,cy)} C${Q81(cx+d*1.2*k,cy-2.6*k)} ${Q81(cx+d*3.6*k,cy-2.6*k)} ${Q81(cx+d*3.5*k,cy-.2*k)} C${Q81(cx+d*3.4*k,cy+2*k)} ${Q81(cx+d*1.4*k,cy+1.8*k)} ${Q81(cx,cy)} Z" fill="${c}" stroke="${OUT}" stroke-width=".5" stroke-linejoin="round"/><path d="M${Q81(cx+d*.9*k,cy-.5*k)} Q${Q81(cx+d*2*k,cy-1.2*k)} ${Q81(cx+d*2.6*k,cy-.3*k)}" fill="none" stroke="${dk}" stroke-width=".45" stroke-linecap="round"/>`;
+  const tail=d=>`<path d="M${Q81(cx+d*.3*k,cy+.4*k)} L${Q81(cx+d*1.5*k,cy+3.4*k)} L${Q81(cx+d*.9*k,cy+3*k)} L${Q81(cx+d*.5*k,cy+3.6*k)} L${Q81(cx-d*.3*k,cy+.6*k)} Z" fill="${dk}" stroke="${OUT}" stroke-width=".45" stroke-linejoin="round"/>`;
+  return tail(-1)+tail(1)+loop(-1)+loop(1)+`<rect x="${f1(cx-.8*k)}" y="${f1(cy-.9*k)}" width="${f1(1.6*k)}" height="${f1(1.8*k)}" rx="${f1(.6*k)}" fill="${dk}" stroke="${OUT}" stroke-width=".45"/>`+
+    [[-2.3,-.9],[2.1,-1.1],[-1.9,.6]].map(([a,b])=>`<circle cx="${f1(cx+a*k)}" cy="${f1(cy+b*k)}" r="${f1(.28*k)}" fill="#FFFFFF" opacity=".85"/>`).join("");}
+function flower81(cx,cy,r,c,ce){const dk=shade(c,-.25);let g="";for(let i=0;i<5;i++){const a=i*Math.PI*2/5-Math.PI/2,px=cx+Math.cos(a)*r*.95,py=cy+Math.sin(a)*r*.95;
+    g+=`<ellipse cx="${f1(px)}" cy="${f1(py)}" rx="${f1(r*.72)}" ry="${f1(r*.55)}" transform="rotate(${f1(a*180/Math.PI+90)} ${f1(px)} ${f1(py)})" fill="${c}" stroke="${OUT}" stroke-width=".4"/>`;}
+  for(let i=0;i<5;i++){const a=i*Math.PI*2/5-Math.PI/2;g+=`<line x1="${f1(cx)}" y1="${f1(cy)}" x2="${f1(cx+Math.cos(a)*r*1.1)}" y2="${f1(cy+Math.sin(a)*r*1.1)}" stroke="${dk}" stroke-width=".3" stroke-linecap="round"/>`;}
+  return g+`<circle cx="${f1(cx)}" cy="${f1(cy)}" r="${f1(r*.45)}" fill="${ce||"#F2C94C"}" stroke="${OUT}" stroke-width=".35"/>`;}
+function leaf81(cx,cy,l,ang,c){return `<g transform="rotate(${ang} ${f1(cx)} ${f1(cy)})"><path d="M${Q81(cx,cy)} Q${Q81(cx+l*.5,cy-l*.38)} ${Q81(cx+l,cy)} Q${Q81(cx+l*.5,cy+l*.38)} ${Q81(cx,cy)} Z" fill="${c}" stroke="${OUT}" stroke-width=".4"/><line x1="${f1(cx+l*.1)}" y1="${f1(cy)}" x2="${f1(cx+l*.85)}" y2="${f1(cy)}" stroke="${shade(c,-.3)}" stroke-width=".3"/></g>`;}
+function heart81(cx,cy,r,fill){return heart28(cx,cy,r,fill)+`<ellipse cx="${f1(cx-r*.45)}" cy="${f1(cy-r*.2)}" rx="${f1(r*.25)}" ry="${f1(r*.16)}" fill="#FFFFFF" opacity=".7"/>`;}
+
+/* ---------- cabeza, de frente ---------- */
+function head81(v,x,y){
+  if(v==="head-cinta"){const c="#E2553B",dk="#9E2E1E";
+    const band=`M${Q81(x-5.9,y-1.2)} C${Q81(x-4.4,y-5.2)} ${Q81(x+4.4,y-5.2)} ${Q81(x+5.9,y-1.2)} L${Q81(x+5.7,y+.9)} C${Q81(x+4.2,y-2.9)} ${Q81(x-4.2,y-2.9)} ${Q81(x-5.7,y+.9)} Z`;
+    return `<path d="M${Q81(x+5.5,y-.6)} Q${Q81(x+8,y+.8)} ${Q81(x+8.4,y+4.2)} L${Q81(x+6.9,y+3.9)} Q${Q81(x+6.9,y+1.6)} ${Q81(x+5.2,y+.6)} Z M${Q81(x+5.6,y-.2)} Q${Q81(x+9.4,y-.4)} ${Q81(x+10.4,y+2.2)} L${Q81(x+9,y+2.8)} Q${Q81(x+8,y+.9)} ${Q81(x+5.4,y+1)} Z" fill="${dk}" stroke="${OUT}" stroke-width=".5" stroke-linejoin="round"/>`+
+      `<path d="${band}" fill="${c}" stroke="${OUT}" stroke-width=".65" stroke-linejoin="round"/><path d="M${Q81(x-5.4,y-.3)} C${Q81(x-4,y-3.95)} ${Q81(x+4,y-3.95)} ${Q81(x+5.4,y-.3)}" fill="none" stroke="#FFFFFF" stroke-width=".55" opacity=".9"/>`+
+      `<circle cx="${f1(x+5.6)}" cy="${f1(y-.2)}" r="1" fill="${dk}" stroke="${OUT}" stroke-width=".45"/>`;}
+  if(v==="head-gorra"){const ac="var(--accent)";
+    return `<path d="M${Q81(x-6.1,y-.4)} C${Q81(x-6.4,y-9.6)} ${Q81(x+6.4,y-9.6)} ${Q81(x+6.1,y-.4)} Z" fill="${ac}" stroke="${OUT}" stroke-width=".7" stroke-linejoin="round"/>`+
+      
+      `<path d="M${Q81(x-2.6,y-6.9)} Q${Q81(x-3.6,y-3)} ${Q81(x-3.4,y-.8)} M${Q81(x+2.6,y-6.9)} Q${Q81(x+3.6,y-3)} ${Q81(x+3.4,y-.8)}" fill="none" stroke="${OUT}" stroke-width=".35" opacity=".45"/>`+
+      `<circle cx="${f1(x)}" cy="${f1(y-7.3)}" r=".8" fill="${ac}" stroke="${OUT}" stroke-width=".45"/>`+star5_81(x,y-3.9,1.5,"#FFFFFF",OUT,.35)+
+      `<path d="M${Q81(x-6.8,y-.6)} Q${Q81(x,y-2.6)} ${Q81(x+6.8,y-.6)} Q${Q81(x+7.2,y+1)} ${Q81(x+5.4,y+1.4)} Q${Q81(x,y+.2)} ${Q81(x-5.4,y+1.4)} Q${Q81(x-7.2,y+1)} ${Q81(x-6.8,y-.6)} Z" fill="${ac}" stroke="${OUT}" stroke-width=".65" stroke-linejoin="round"/>`+
+      `<path d="M${Q81(x-6.8,y-.6)} Q${Q81(x,y-2.6)} ${Q81(x+6.8,y-.6)} Q${Q81(x+7.2,y+1)} ${Q81(x+5.4,y+1.4)} Q${Q81(x,y+.2)} ${Q81(x-5.4,y+1.4)} Q${Q81(x-7.2,y+1)} ${Q81(x-6.8,y-.6)} Z" fill="#000000" opacity=".22"/>`;}
+  if(v==="head-corona"){
+    return `<path d="M${Q81(x-5.4,y-3.8)} L${Q81(x-6.3,y-11)} L${Q81(x-3.2,y-7.8)} L${Q81(x,y-12.4)} L${Q81(x+3.2,y-7.8)} L${Q81(x+6.3,y-11)} L${Q81(x+5.4,y-3.8)} Q${Q81(x,y-5.2)} ${Q81(x-5.4,y-3.8)} Z" fill="#F2C94C" stroke="#8A6510" stroke-width=".65" stroke-linejoin="round"/>`+
+      `<path d="M${Q81(x-4.6,y-6.4)} L${Q81(x-5.4,y-9.6)} L${Q81(x-3.4,y-7.2)} Z M${Q81(x-1.2,y-8)} L${Q81(x,y-10.9)} L${Q81(x+.5,y-8.2)} Z" fill="#FFF1A8" opacity=".8"/>`+
+      `<path d="M${Q81(x-5.7,y-5.9)} Q${Q81(x,y-7.6)} ${Q81(x+5.7,y-5.9)} L${Q81(x+5.4,y-3.8)} Q${Q81(x,y-5.2)} ${Q81(x-5.4,y-3.8)} Z" fill="#D9A21B" stroke="#8A6510" stroke-width=".55" stroke-linejoin="round"/>`+
+      `<circle cx="${f1(x)}" cy="${f1(y-5.5)}" r="1" fill="#E5484D" stroke="#8A6510" stroke-width=".4"/><circle cx="${f1(x-.3)}" cy="${f1(y-5.8)}" r=".3" fill="#FFFFFF"/>`+
+      `<circle cx="${f1(x-3.4)}" cy="${f1(y-5.1)}" r=".65" fill="#3C9BF0" stroke="#8A6510" stroke-width=".3"/><circle cx="${f1(x+3.4)}" cy="${f1(y-5.1)}" r=".65" fill="#18A36A" stroke="#8A6510" stroke-width=".3"/>`+
+      [[-6.3,-11],[0,-12.4],[6.3,-11]].map(([a,b])=>`<circle cx="${f1(x+a)}" cy="${f1(y+b)}" r=".75" fill="#FFF1A8" stroke="#8A6510" stroke-width=".4"/>`).join("");}
+  if(v==="head-halo")return `<ellipse cx="${f1(x)}" cy="${f1(y-9.6)}" rx="6.6" ry="2" fill="none" stroke="#FFE58A" stroke-width="3.4" opacity=".35"/><ellipse cx="${f1(x)}" cy="${f1(y-9.6)}" rx="6.4" ry="1.9" fill="none" stroke="#B5860F" stroke-width="2.2"/><ellipse cx="${f1(x)}" cy="${f1(y-9.6)}" rx="6.4" ry="1.9" fill="none" stroke="#F7D96A" stroke-width="1.3"/><path d="M${Q81(x-4.6,y-10.9)} Q${Q81(x-1.5,y-11.6)} ${Q81(x+1,y-11.5)}" fill="none" stroke="#FFFFFF" stroke-width=".45" stroke-linecap="round" opacity=".9"/>`;
+  if(v==="head-lazo")return bow81(x+4,y-6,1.45,"#FF6FA5");
+  if(v==="head-diadema"){const B=t=>{const u=1-t;return [u*u*u*(x-5.3)+3*u*u*t*(x-5.4)+3*u*t*t*(x+5.4)+t*t*t*(x+5.3),u*u*u*(y+.6)+3*u*u*t*(y-7.6)+3*u*t*t*(y-7.6)+t*t*t*(y+.6)];};
+    const d=`M${Q81(x-5.3,y+.6)} C${Q81(x-5.4,y-7.6)} ${Q81(x+5.4,y-7.6)} ${Q81(x+5.3,y+.6)}`;
+    return `<path d="${d}" fill="none" stroke="${OUT}" stroke-width="2.5" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#B47AF0" stroke-width="1.6" stroke-linecap="round"/><path d="M${Q81(x-4.6,y-2.4)} C${Q81(x-4.2,y-6.5)} ${Q81(x+1,y-6.9)} ${Q81(x+2.4,y-6.3)}" fill="none" stroke="#E9D5FF" stroke-width=".5" stroke-linecap="round"/>`+
+      [.22,.36,.64,.78].map(t=>{const p=B(t);return `<circle cx="${f1(p[0])}" cy="${f1(p[1]-.5)}" r=".7" fill="#FFFFFF" stroke="${OUT}" stroke-width=".3"/>`;}).join("")+(p=>flower81(p[0],p[1]-.6,1.25,"#FF9FC0"))(B(.5));}
+  if(v==="head-flor")return leaf81(x-5.4,y-3.6,3,200,"#4CAF6A")+leaf81(x-3.4,y-4.4,2.6,-30,"#3E9A5B")+flower81(x-4.6,y-4.6,1.75,"#FF9FC0")+flower81(x-1.6,y-6.6,1,"#FFFFFF","#FFB020");
+  return null;}
+
+/* ---------- cara y complementos, de frente ---------- */
+function face81(v,x,y){
+  if(v==="face-pestanas")return [-1,1].map(d=>{const ex=x+d*2.1,ey=y+.6;
+    return `<ellipse cx="${f1(ex)}" cy="${f1(ey-1)}" rx="1.4" ry=".75" fill="#B47AF0" opacity=".55"/>`+
+      `<path d="M${Q81(ex-d*1.1,ey-.2)} Q${Q81(ex,ey-1.5)} ${Q81(ex+d*1.2,ey-.4)} L${Q81(ex+d*1.9,ey-1.1)}" fill="none" stroke="${OUT}" stroke-width=".55" stroke-linecap="round" stroke-linejoin="round"/>`+
+      `<path d="M${Q81(ex+d*.1,ey-1)} l${f1(d*.25)} -1 M${Q81(ex+d*.65,ey-.85)} l${f1(d*.6)} -.85 M${Q81(ex+d*1.05,ey-.55)} l${f1(d*.95)} -.55" stroke="${OUT}" stroke-width=".4" stroke-linecap="round"/>`;}).join("");
+  if(v==="face-colorete")return [-1,1].map(d=>`<ellipse cx="${f1(x+d*3.7)}" cy="${f1(y+2.5)}" rx="1.7" ry="1.15" fill="#FF5C8A" opacity=".6"/><circle cx="${f1(x+d*3.3)}" cy="${f1(y+2.1)}" r=".3" fill="#FFFFFF" opacity=".9"/>`).join("")+
+    `<path d="M${Q81(x-1.7,y+3.4)} Q${Q81(x-.9,y+2.4)} ${Q81(x,y+3)} Q${Q81(x+.9,y+2.4)} ${Q81(x+1.7,y+3.4)} Q${Q81(x,y+5.1)} ${Q81(x-1.7,y+3.4)} Z" fill="#E0457B" stroke="${OUT}" stroke-width=".4" stroke-linejoin="round"/><path d="M${Q81(x-1.5,y+3.45)} Q${Q81(x,y+4)} ${Q81(x+1.5,y+3.45)}" fill="none" stroke="#8E1F49" stroke-width=".35"/><ellipse cx="${f1(x-.6)}" cy="${f1(y+4.2)}" rx=".45" ry=".2" fill="#FFFFFF" opacity=".75"/>`;
+  if(v==="face-pecas"){const P=[[3.4,1.9],[4.3,2.4],[2.8,2.6],[3.8,3.1],[4.8,1.8],[2.6,1.8],[3.3,2.3]];
+    return P.map(([a,b])=>[-1,1].map(d=>`<circle cx="${f1(x+d*a)}" cy="${f1(y+b)}" r=".38" fill="#A0582E" opacity=".85"/>`).join("")).join("")+[[-.6,2.1],[.6,2.1],[0,1.6]].map(([a,b])=>`<circle cx="${f1(x+a)}" cy="${f1(y+b)}" r=".28" fill="#A0582E" opacity=".75"/>`).join("");}
+  if(v==="face-purpurina")return [[-4.3,-.6,1.5,"#F2C94C"],[4.4,0,1.3,"#FF8FB8"],[3.5,3.2,.9,"#C084FC"],[-3.6,3.3,.9,"#5FC8F0"],[-5.6,2,.6,"#F2C94C"],[5.7,2.2,.6,"#F2C94C"]].map(([a,b,r,c])=>star81(x+a,y+b,r,c,.25)).join("")+
+    [[-2.8,1.6],[3,1.7],[-4.8,.9],[4.9,.9],[-1.2,-2.6],[1.6,-2.9]].map(([a,b])=>`<circle cx="${f1(x+a)}" cy="${f1(y+b)}" r=".22" fill="#FFFFFF"/>`).join("");
+  if(v==="head-gafas"){const L=d=>`<rect x="${f1(d<0?x-5.2:x+.9)}" y="${f1(y-1.1)}" width="4.3" height="3.3" rx="1.4" fill="#141B2B" stroke="${OUT}" stroke-width=".6"/><path d="M${Q81(d<0?x-4.4:x+1.7,y+1.4)} L${Q81(d<0?x-2.6:x+3.5,y-.6)}" stroke="#FFFFFF" stroke-width=".55" stroke-linecap="round" opacity=".6"/><path d="M${Q81(d<0?x-3.5:x+2.6,y+1.7)} L${Q81(d<0?x-2:x+4.2,y+.1)}" stroke="#7FB4FF" stroke-width=".35" stroke-linecap="round" opacity=".55"/>`;
+    return `<path d="M${Q81(x-5.2,y-.2)} L${Q81(x-6.1,y+.4)} M${Q81(x+5.2,y-.2)} L${Q81(x+6.1,y+.4)}" stroke="${OUT}" stroke-width=".7" stroke-linecap="round"/>`+L(-1)+L(1)+`<path d="M${Q81(x-.9,y-.1)} Q${Q81(x,y-.9)} ${Q81(x+.9,y-.1)}" fill="none" stroke="${OUT}" stroke-width=".7"/>`;}
+  if(v==="face-pintura")return [-1,1].map(d=>[[2.7,5.3,2.6,2.1],[2.9,5.3,3.8,3.3]].map(([a,b,c,e])=>`<path d="M${Q81(x+d*a,y+c)} L${Q81(x+d*b,y+e)}" stroke="${OUT}" stroke-width="1.35" stroke-linecap="round"/><path d="M${Q81(x+d*a,y+c)} L${Q81(x+d*b,y+e)}" stroke="#D7263D" stroke-width=".8" stroke-linecap="round"/>`).join("")).join("");
+  return null;}
+function acc81(v,h,s){const [x,y]=h;if(!v||v==="acc-none")return null;const ear=[[x-5.5,y+2.5],[x+5.5,y+2.5]];
+  if(v==="acc-aros")return ear.map(([a,b])=>`<circle cx="${f1(a)}" cy="${f1(b+1.6)}" r="1.55" fill="none" stroke="${OUT}" stroke-width="1.25"/><circle cx="${f1(a)}" cy="${f1(b+1.6)}" r="1.55" fill="none" stroke="#E9B92F" stroke-width=".7"/><path d="M${Q81(a-1.1,b+.9)} Q${Q81(a-.9,b+.3)} ${Q81(a-.3,b+.1)}" fill="none" stroke="#FFF1A8" stroke-width=".35"/>`).join("");
+  if(v==="acc-perlas")return ear.map(([a,b])=>`<circle cx="${f1(a)}" cy="${f1(b)}" r=".45" fill="#E9B92F" stroke="${OUT}" stroke-width=".25"/><line x1="${f1(a)}" y1="${f1(b+.3)}" x2="${f1(a)}" y2="${f1(b+1.4)}" stroke="#B5860F" stroke-width=".35"/><circle cx="${f1(a)}" cy="${f1(b+2.4)}" r="1.15" fill="#F6F2EA" stroke="${OUT}" stroke-width=".4"/><circle cx="${f1(a-.35)}" cy="${f1(b+2)}" r=".38" fill="#FFFFFF"/>`).join("");
+  const nx=50,sy=s[1],w=isF()?3.2:3.9;
+  const cv=t=>{const u=1-t;return [u*u*(nx-w)+2*u*t*nx+t*t*(nx+w),u*u*(sy-2.4)+2*u*t*(sy+3.2)+t*t*(sy-2.4)];};
+  const chain=`M${Q81(nx-w,sy-2.4)} Q${Q81(nx,sy+3.2)} ${Q81(nx+w,sy-2.4)}`;
+  if(v==="acc-collar"){const p=cv(.5);return `<path d="${chain}" fill="none" stroke="${OUT}" stroke-width=".9"/><path d="${chain}" fill="none" stroke="#E9B92F" stroke-width=".5"/><circle cx="${f1(p[0])}" cy="${f1(p[1]+.2)}" r=".45" fill="#E9B92F" stroke="${OUT}" stroke-width=".25"/>`+heart81(p[0],p[1]+1.9,1.55,"#FF4D8D").replace(`stroke-width=".45"`,`stroke-width=".55"`);}
+  if(v==="acc-perlas2"){let g=`<path d="${chain}" fill="none" stroke="#9AA3B2" stroke-width=".3"/>`;for(let i=0;i<=10;i++){const p=cv(i/10),r=i===5?1.05:.78;g+=`<circle cx="${f1(p[0])}" cy="${f1(p[1])}" r="${r}" fill="#F6F2EA" stroke="${OUT}" stroke-width=".3"/><circle cx="${f1(p[0]-r*.3)}" cy="${f1(p[1]-r*.3)}" r="${f1(r*.3)}" fill="#FFFFFF"/>`;}return g;}
+  return null;}
+
+{const _h=headAcc;headAcc=function(lk,h,s,front){
+  if(front){const r=head81(lk.head,h[0],h[1]);if(r!==null)return r;
+    if(lk.head==="head-vikingo"){const [x,y]=h;return _h.apply(this,arguments)+`<path d="M${Q81(x-6.8,y-1.6)} Q${Q81(x,y-3.6)} ${Q81(x+6.8,y-1.6)} L${Q81(x+6.8,y)} Q${Q81(x,y-2)} ${Q81(x-6.8,y)} Z" fill="#6F7C8A" stroke="${OUT}" stroke-width=".5"/><path d="M${Q81(x,y-7.6)} L${Q81(x,y-2.6)}" stroke="#6F7C8A" stroke-width="1.4"/>`+[-4.6,-1.6,1.6,4.6].map(a=>`<circle cx="${f1(x+a)}" cy="${f1(y-1.4-(1-Math.abs(a)/6)*.9)}" r=".35" fill="#DDE3EA"/>`).join("");}}
+  else if(lk.head==="head-cinta"){const {T,P}=fr28(h,s);return `<path d="M${P(T(-5.6,2.2))} L${P(T(-8.6,-.8))}" stroke="${OUT}" stroke-width="2" stroke-linecap="round"/><path d="M${P(T(-5.6,2.2))} L${P(T(-8.6,-.8))}" stroke="#9E2E1E" stroke-width="1.1" stroke-linecap="round"/><path d="M${P(T(-5.6,2.2))} L${P(T(5.4,3))}" stroke="${OUT}" stroke-width="2.6" stroke-linecap="round"/><path d="M${P(T(-5.6,2.2))} L${P(T(5.4,3))}" stroke="#E2553B" stroke-width="1.8" stroke-linecap="round"/>`;}
+  return _h.apply(this,arguments);};}
+{const _f=faceAcc;faceAcc=function(lk,h,s,front){if(!front)return _f.apply(this,arguments);
+  const f=face81(lk.face,h[0],h[1]),a=acc81(lk.acc,h,s);if(f===null&&a===null)return _f.apply(this,arguments);
+  let fp=f;if(fp===null){fp=face28(lk,h,s,true);if(fp===null)fp=_face28(lk,h,s,true);}
+  return fp+(a===null?acc28(lk,h,s,true):a);};}
+
+/* ---------- estampados de camiseta ---------- */
+function pat81(id,c,sy,yb){const R=rnd81(id),W=mix81(c,"#FFFFFF",.55),D=mix81(c,"#000000",.3),cx=50,cy=sy+6.5;let g="";
+  const dots=(n,f)=>{for(let i=0;i<n;i++)g+=f(36+R()*28,sy-3+R()*(yb-sy+3),i);};
+  switch(id){
+    case "skin-cobalto":return `<rect x="30" y="${f1(sy+8.4)}" width="40" height="1.7" fill="#FFFFFF" opacity=".9"/><rect x="30" y="${f1(sy+10.8)}" width="40" height=".7" fill="#FFFFFF" opacity=".7"/>`;
+    case "skin-fuego":case "skin-brasa":{const hot=id==="skin-brasa";for(let i=-4;i<=4;i++){const x=50+i*3,t=yb-(hot?5:6.5)-(i%2?0:2.4)*(hot?.7:1);
+      g+=`<path d="M${Q81(x-2,yb+1)} Q${Q81(x-2.4,yb-3)} ${Q81(x,t)} Q${Q81(x+2.4,yb-3)} ${Q81(x+2,yb+1)} Z" fill="${hot?"#7A1A0A":"#FFB020"}" opacity=".9"/><path d="M${Q81(x-1,yb+1)} Q${Q81(x-1.2,yb-1.8)} ${Q81(x,t+2.6)} Q${Q81(x+1.2,yb-1.8)} ${Q81(x+1,yb+1)} Z" fill="${hot?"#FF8A3D":"#FFE066"}"/>`;}
+      if(hot)dots(9,(x,y)=>`<circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(.25+R()*.3)}" fill="#FFD25A"/>`);return g;}
+    case "skin-esmeralda":return `<path d="M${Q81(34,sy+2)} L${Q81(50,sy+10)} L${Q81(66,sy+2)}" fill="none" stroke="${W}" stroke-width="2"/><path d="M${Q81(34,sy+5.4)} L${Q81(50,sy+13.4)} L${Q81(66,sy+5.4)}" fill="none" stroke="${W}" stroke-width=".8"/>`;
+    case "skin-neon":return `<path d="M${Q81(cx+1,cy-3.2)} L${Q81(cx-2.2,cy+.6)} L${Q81(cx-.1,cy+.6)} L${Q81(cx-1.2,cy+3.6)} L${Q81(cx+2.4,cy-.6)} L${Q81(cx+.3,cy-.6)} Z" fill="#B8F33A" stroke="${OUT}" stroke-width=".45" stroke-linejoin="round"/><path d="M${Q81(38,sy-2)} L${Q81(38,yb)} M${Q81(62,sy-2)} L${Q81(62,yb)}" stroke="#B8F33A" stroke-width=".7" opacity=".8"/>`;
+    case "skin-noche":dots(10,(x,y)=>`<circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(.18+R()*.25)}" fill="#FFFFFF" opacity=".85"/>`);
+      return g+`<circle cx="${f1(cx-.6)}" cy="${f1(cy)}" r="2.3" fill="#F7D96A"/><circle cx="${f1(cx+.5)}" cy="${f1(cy-.7)}" r="2" fill="${c}"/>`+star81(cx+2.6,cy+1.6,.8,"#FFFFFF");
+    case "skin-rosa":for(let y=sy-3,j=0;y<yb+2;y+=3.2,j++)for(let x=34+(j%2)*1.6;x<66;x+=3.2)g+=`<circle cx="${f1(x)}" cy="${f1(y)}" r=".6" fill="#FFFFFF" opacity=".75"/>`;return g;
+    case "skin-militar":dots(14,(x,y,i)=>`<ellipse cx="${f1(x)}" cy="${f1(y)}" rx="${f1(1.4+R()*1.6)}" ry="${f1(.9+R()*1)}" transform="rotate(${Math.round(R()*180)} ${f1(x)} ${f1(y)})" fill="${i%2?"#3F4F2C":"#8A9A5B"}"/>`);return g;
+    case "skin-galaxia":g=`<ellipse cx="44" cy="${f1(sy+4)}" rx="7" ry="3" fill="#E86FA5" opacity=".35" transform="rotate(-20 44 ${f1(sy+4)})"/><ellipse cx="56" cy="${f1(sy+11)}" rx="7" ry="2.6" fill="#5FC8F0" opacity=".3" transform="rotate(15 56 ${f1(sy+11)})"/>`;
+      dots(16,(x,y)=>`<circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(.15+R()*.25)}" fill="#FFFFFF"/>`);return g+star81(cx+2.4,cy-1.4,1.3,"#FFFFFF")+star81(cx-3,cy+2.6,.8,"#FFE58A");
+    case "skin-diamante":for(let x=30;x<72;x+=4.4)g+=`<path d="M${Q81(x,sy-4)} L${Q81(x+8,yb+2)} M${Q81(x+8,sy-4)} L${Q81(x,yb+2)}" stroke="#FFFFFF" stroke-width=".35" opacity=".45"/>`;return g+star81(cx+2.6,cy-1.6,1.5,"#FFFFFF")+star81(cx-3,cy+3,.8,"#FFFFFF");
+    case "skin-oro":for(let x=26;x<74;x+=7)g+=`<path d="M${Q81(x,yb+2)} L${Q81(x+10,sy-4)}" stroke="#FFF1A8" stroke-width="1.6" opacity=".35"/>`;return g+star5_81(cx,cy,2.4,"#FFF1A8","#8A6510",.45);
+    case "skin-cuero":return `<path d="M${Q81(44.6,sy-3)} L${Q81(44.6,yb+1)} M${Q81(55.4,sy-3)} L${Q81(55.4,yb+1)} M${Q81(30,sy+11)} L${Q81(70,sy+11)}" stroke="#D9B48A" stroke-width=".4" stroke-dasharray="1 .8"/><rect x="47" y="${f1(sy+12.5)}" width="6" height="4.4" rx=".8" fill="${D}" stroke="#D9B48A" stroke-width=".35" stroke-dasharray=".8 .6"/>`;
+    case "skin-acero":for(let y=sy+3;y<yb;y+=5)g+=`<line x1="30" y1="${f1(y)}" x2="70" y2="${f1(y)}" stroke="${D}" stroke-width=".6"/>`+[44,56].map(x=>`<circle cx="${x}" cy="${f1(y+1.4)}" r=".45" fill="#DDE3EA"/>`).join("");return g+`<path d="M${Q81(30,yb+2)} L${Q81(44,sy-4)}" stroke="#FFFFFF" stroke-width="2" opacity=".18"/>`;
+    case "skin-escarcha":{const fl=(x,y,r)=>`<g stroke="#FFFFFF" stroke-width=".35" stroke-linecap="round">${[0,60,120].map(a=>{const dx=Math.cos(a*Math.PI/180)*r,dy=Math.sin(a*Math.PI/180)*r;return `<line x1="${f1(x-dx)}" y1="${f1(y-dy)}" x2="${f1(x+dx)}" y2="${f1(y+dy)}"/>`;}).join("")}</g>`;
+      return fl(cx,cy,2.2)+fl(43,sy+2,1.1)+fl(57.5,sy+2.6,1.2)+fl(44,sy+12,1.2)+fl(56,sy+13,1.1)+fl(50,sy+19,1.3);}
+    case "skin-lluvia":for(let y=sy-2,j=0;y<yb+2;y+=3.6,j++)for(let x=35+(j%2)*2;x<66;x+=4)g+=`<path d="M${Q81(x,y-.8)} Q${Q81(x+.6,y+.2)} ${Q81(x,y+.5)} Q${Q81(x-.6,y+.2)} ${Q81(x,y-.8)} Z" fill="#CFE6FF" opacity=".75"/>`;
+      return g+`<path d="M${Q81(cx-3,cy+1)} Q${Q81(cx-3.4,cy-1.4)} ${Q81(cx-1,cy-1.2)} Q${Q81(cx,cy-3)} ${Q81(cx+1.8,cy-1.4)} Q${Q81(cx+3.6,cy-1.2)} ${Q81(cx+3,cy+1)} Z" fill="#FFFFFF" stroke="${OUT}" stroke-width=".35"/>`;
+    case "skin-verano":for(let i=0;i<8;i++){const a=i*Math.PI/4;g+=`<line x1="${f1(cx+Math.cos(a)*2.3)}" y1="${f1(cy+Math.sin(a)*2.3)}" x2="${f1(cx+Math.cos(a)*3.3)}" y2="${f1(cy+Math.sin(a)*3.3)}" stroke="#FFE066" stroke-width=".6" stroke-linecap="round"/>`;}
+      return g+`<circle cx="${cx}" cy="${f1(cy)}" r="1.8" fill="#FFE066" stroke="${OUT}" stroke-width=".35"/><path d="M${Q81(30,yb-2.6)} q2.5 -1.6 5 0 t5 0 t5 0 t5 0 t5 0 t5 0 t5 0 t5 0 L70 ${f1(yb+2)} L30 ${f1(yb+2)} Z" fill="#3FA7D6" opacity=".85"/>`;
+    case "skin-vuelta":for(let y=sy+1;y<yb+2;y+=2.4)g+=`<line x1="30" y1="${f1(y)}" x2="70" y2="${f1(y)}" stroke="#F3E2C7" stroke-width=".3" opacity=".7"/>`;
+      return g+`<line x1="41" y1="${f1(sy-4)}" x2="41" y2="${f1(yb+2)}" stroke="#E5484D" stroke-width=".4"/><circle cx="${cx}" cy="${f1(cy+.4)}" r="2.1" fill="#E5484D" stroke="${OUT}" stroke-width=".35"/><path d="M${Q81(cx,cy-1.6)} q.2 -1 1 -1.4" fill="none" stroke="#6B4426" stroke-width=".4"/>`+leaf81(cx+.3,cy-2,1.4,-30,"#4CAF6A");
+    case "skin-navidad":for(let x=30;x<70;x+=2.4)g+=`<path d="M${Q81(x,sy+3)} L${Q81(x+1.2,sy+1.8)} L${Q81(x+2.4,sy+3)}" fill="none" stroke="#FFFFFF" stroke-width=".55"/>`;
+      g+=`<rect x="30" y="${f1(sy+3.8)}" width="40" height=".9" fill="#1E7D4A"/>`;
+      return g+`<path d="M${Q81(cx,sy+5.2)} L${Q81(cx+2.4,sy+10.4)} L${Q81(cx-2.4,sy+10.4)} Z" fill="#1E7D4A" stroke="${OUT}" stroke-width=".35" stroke-linejoin="round"/><rect x="${f1(cx-.4)}" y="${f1(sy+10.4)}" width=".8" height=".8" fill="#6B4426"/>`+star5_81(cx,sy+5,.8,"#F2C94C",OUT,.25)+[[-1,8.8],[.9,7.7],[.3,9.6]].map(([a,b])=>`<circle cx="${f1(cx+a)}" cy="${f1(sy+b)}" r=".3" fill="${["#F2C94C","#FFFFFF","#FF8FB8"][Math.round(R()*2)]}"/>`).join("");
+    case "skin-lila":dots(9,(x,y)=>star81(x,y,.5+R()*.4,"#FFFFFF"));return g;
+    case "skin-coral":for(let y=sy-1;y<yb+2;y+=3)g+=`<rect x="30" y="${f1(y)}" width="40" height="1.1" fill="#FFFFFF" opacity=".55"/>`;return g;
+    case "skin-menta":return leaf81(cx-2.4,cy+1.4,4.4,-40,"#2F9E7E")+leaf81(cx-.4,cy+2.2,2.8,-90,"#3EB592");
+    case "skin-pastel":dots(10,(x,y)=>heart28(x,y,.6,"#FFFFFF","#FFFFFF"));return g;
+    case "skin-fucsia":for(let x=20;x<80;x+=3.4)g+=`<path d="M${Q81(x,sy-4)} L${Q81(x-10,yb+2)}" stroke="${mix81(c,"#FFFFFF",.3)}" stroke-width="1.2"/>`;return g;
+  }
+  return "";}
+function skinPat81(lk,s){const id=lk.skinId;if(!id||!lk.fig)return s;
+  const fem=isF(),st=Math.max(0,Math.min(4,lk.build|0)),sy=st===0?29.5:28,yb=fem&&st>=2?39.5:55.5;
+  const pat=pat81(id,lk.fig,sy,yb);if(!pat)return s;
+  const re=new RegExp(`<path d="([^"]+)" fill="${lk.fig}" stroke="${OUT}" stroke-width="(1\\.[345])" stroke-linejoin="round"/>`);const m=s.match(re);if(!m)return s;
+  const k="ck81_"+(++N81);
+  return s.replace(m[0],m[0]+`<clipPath id="${k}"><path d="${m[1]}"/></clipPath><g clip-path="url(#${k})">${pat}</g><path d="${m[1]}" fill="none" stroke="${OUT}" stroke-width="${m[2]}" stroke-linejoin="round"/>`);}
+
+/* ---------- zapatillas con suela, cordones y adorno ---------- */
+function shoes81(lk){const st=Math.max(0,Math.min(4,lk.build|0)),B=isF()?HB25.f:HB25.m,hx=B.hp[st]-3.6,spread=st>=3?1.8:.6,c=lk.shoe||SHOE,id=lk.shoeId||"shoes-base";
+  const sole=c===SHOE?"#C9D0DB":"#FFFFFF",lace=c===SHOE||/^#(F|E[0-9A-F])/i.test(c)&&id!=="shoes-corazon"&&id!=="shoes-rojas"?"#8A94A6":"#FFFFFF";let g="";
+  for(const d of [-1,1]){const ax=50+d*(hx+spread),y=92.8,x0=ax-d*2.4,x1=ax+d*3.2;
+    const lo=Math.min(x0,x1)-1.7,hi=Math.max(x0,x1)+1.7;g+=`<ellipse cx="${f1(x1+d*.7)}" cy="${f1(y+.1)}" rx="1.7" ry="1.3" fill="${mix81(c,"#FFFFFF",.3)}"/><path d="M${Q81(x0-d*1.8,y-1.6)} L${Q81(x0-d*1.8,y+.6)}" stroke="${mix81(c,"#000000",.25)}" stroke-width=".7"/><rect x="${f1(lo)}" y="${f1(y+.75)}" width="${f1(hi-lo)}" height="1.25" rx=".55" fill="${sole}"/><line x1="${f1(lo+.3)}" y1="${f1(y+.75)}" x2="${f1(hi-.3)}" y2="${f1(y+.75)}" stroke="${OUT}" stroke-width=".3"/>`;
+    g+=[0,.9].map(o=>`<line x1="${f1(ax-d*.6+d*o)}" y1="${f1(y-1.3)}" x2="${f1(ax-d*.1+d*o)}" y2="${f1(y-.2)}" stroke="${lace}" stroke-width=".4" stroke-linecap="round"/>`).join("");
+    const ox=ax+d*2.1,oy=y-.3;
+    if(id==="shoes-corazon")g+=heart28(ox,oy,.8,"#FFFFFF","#FFFFFF");
+    else if(id==="shoes-flor")g+=flower28(ox,oy,.55,"#FFFFFF");
+    else if(id==="shoes-otono")g+=leaf81(ox-d*.8,oy,1.8,d<0?200:-20,"#E8A03A");
+    else if(id==="shoes-oro")g+=star81(ox,oy-.2,.9,"#FFF1A8");
+    else if(id==="shoes-neon")g+=`<path d="M${Q81(ox-d*1.2,oy+.6)} L${Q81(ox,oy-.4)} L${Q81(ox+d*.2,oy+.5)} L${Q81(ox+d*1.2,oy-.6)}" fill="none" stroke="${OUT}" stroke-width=".4" stroke-linejoin="round"/>`;
+    else g+=`<path d="M${Q81(ox-d*1.2,oy+.5)} Q${Q81(ox,oy+.2)} ${Q81(ox+d*1,oy-.8)}" fill="none" stroke="${c===SHOE?"#3C63F0":"#FFFFFF"}" stroke-width=".5" stroke-linecap="round"/>`;}
+  return g;}
+
+{const _l=lookOf;lookOf=function(over){const r=_l.apply(this,arguments);const e=Object.assign({},EQ0,S.equip,over||{});r.skinId=e.skin;r.shoeId=e.shoes;r.propId=e.prop;return r;};}
+{const _hf=heroFig25;heroFig25=function(lk){let s=_hf.apply(this,arguments);
+  try{s=skinPat81(lk,s);const i=s.lastIndexOf("</g>");if(i>0)s=s.slice(0,i)+shoes81(lk)+s.slice(i);}catch(e){console.error("fig81",e);}
+  return s;};}
+
+/* ---------- pesas en la tienda ---------- */
+function propSvg81(id,label){const it=itemById(id)||{},c=it.v||"#3A4150",lt=mix81(c,"#FFFFFF",.4),dk=mix81(c,"#000000",.35);let deco="",glow="";
+  const plate=(x,w,h)=>`<rect x="${f1(x-w/2)}" y="${f1(30-h/2)}" width="${w}" height="${h}" rx="1.6" fill="${c}" stroke="${OUT}" stroke-width="1.1"/><rect x="${f1(x-w/2+.9)}" y="${f1(30-h/2+1.4)}" width="1.2" height="${f1(h-2.8)}" rx=".6" fill="${lt}" opacity=".8"/><rect x="${f1(x+w/2-1.6)}" y="${f1(30-h/2+1)}" width=".9" height="${f1(h-2)}" rx=".45" fill="${dk}" opacity=".6"/>`;
+  const plates=[[13,6,24],[19.5,5,17],[47,6,24],[40.5,5,17]];
+  if(id==="prop-sandia")deco=plates.map(([x,w,h])=>`<rect x="${f1(x-w/2+.5)}" y="${f1(30-h/2+.5)}" width="${w-1}" height="${h-1}" rx="1.3" fill="none" stroke="#2E8B57" stroke-width="1.2"/>`+[-.3,.3].map(k=>`<ellipse cx="${f1(x)}" cy="${f1(30+k*h*.6)}" rx=".5" ry=".8" fill="#1A2030"/>`).join("")).join("");
+  else if(id==="prop-calabaza")deco=plates.map(([x,w,h])=>`<path d="M${Q81(x,30-h/2+1.5)} L${Q81(x,30+h/2-1.5)}" stroke="${dk}" stroke-width=".6"/>`).join("")+`<path d="M13 17.6 q.6 -3 2.6 -3.4" fill="none" stroke="#3E7D2E" stroke-width="1.4" stroke-linecap="round"/><path d="M47 17.6 q-.6 -3 -2.6 -3.4" fill="none" stroke="#3E7D2E" stroke-width="1.4" stroke-linecap="round"/>`;
+  else if(id==="prop-primavera")deco=[13,47].map(x=>flower81(x,30,2,"#FFFFFF","#F2C94C")).join("")+leaf81(19.5,24,3,-60,"#2E8B57");
+  else if(id==="prop-diamante")deco=plates.map(([x,w,h])=>`<path d="M${Q81(x-w/2+.8,30-h/4)} L${Q81(x,30-h/2+1)} L${Q81(x+w/2-.8,30-h/4)} M${Q81(x-w/2+.8,30+h/4)} L${Q81(x,30+h/2-1)} L${Q81(x+w/2-.8,30+h/4)}" fill="none" stroke="#FFFFFF" stroke-width=".5" opacity=".75"/>`).join("")+star81(52,14,2.4,"#FFFFFF")+star81(8,46,1.6,"#FFFFFF");
+  else if(id==="prop-oro")deco=star81(52,14,2.4,"#FFF1A8")+star81(8,46,1.6,"#FFF1A8")+star81(30,15,1.2,"#FFF1A8");
+  else if(id==="prop-rosa")deco=[13,47].map(x=>heart81(x,30,2.2,"#FFFFFF")).join("");
+  else if(id==="prop-lila")deco=[13,47].map(x=>star5_81(x,30,2.4,"#FFFFFF",OUT,.4)).join("");
+  else if(id==="prop-neon")glow=plates.map(([x,w,h])=>`<rect x="${f1(x-w/2)}" y="${f1(30-h/2)}" width="${w}" height="${h}" rx="1.6" fill="none" stroke="${c}" stroke-width="4" opacity=".3"/>`).join("")+[[6,16,3,13],[54,44,57,47],[54,16,57,13],[6,44,3,47]].map(([a,b,c2,d2])=>`<line x1="${a}" y1="${b}" x2="${c2}" y2="${d2}" stroke="${c}" stroke-width="1.2" stroke-linecap="round"/>`).join("");
+  else if(id==="prop-base"||!it.v)deco=[13,47].map(x=>`<circle cx="${x}" cy="30" r="1.4" fill="#8A94A6" stroke="${OUT}" stroke-width=".5"/>`).join("");
+  return `<svg viewBox="0 0 60 60" role="img" aria-label="${label||it.n||"Pesas"}"><ellipse cx="30" cy="47" rx="22" ry="2.6" fill="#000000" opacity=".18"/><g transform="rotate(-12 30 30)">${glow}`+
+    `<rect x="8" y="28.2" width="44" height="3.6" rx="1.4" fill="#9AA3B2" stroke="${OUT}" stroke-width="1"/>`+[24,26.5,29,31.5,34,36.5].map(x=>`<line x1="${x}" y1="28.6" x2="${x}" y2="31.4" stroke="#6F7C8A" stroke-width=".45"/>`).join("")+
+    plates.map(([x,w,h])=>plate(x,w,h)).join("")+`<rect x="7.6" y="27.4" width="2" height="5.2" rx=".6" fill="#C9D0DB" stroke="${OUT}" stroke-width=".7"/><rect x="50.4" y="27.4" width="2" height="5.2" rx=".6" fill="#C9D0DB" stroke="${OUT}" stroke-width=".7"/>${deco}</g></svg>`;}
+{const _a=avatarSvg;avatarSvg=function(over){LAST81=over||{};return _a.apply(this,arguments);};}
+{const _z=zoom28;zoom28=function(slot,svg){
+  if(slot==="prop")return propSvg81(LAST81.prop);
+  if(slot==="shoes")return svg.replace(/viewBox="[^"]*"/,'viewBox="35 82 30 15"');
+  if(slot==="skin")return svg.replace(/viewBox="[^"]*"/,'viewBox="25 4 50 62"');
+  return _z(slot,svg);};}
+{const _p=itemPv;itemPv=function(it){return it&&it.slot&&/^(prop|shoes|skin|head|face|acc)$/.test(it.slot)?zoom28(it.slot,avatarSvg({[it.slot]:it.id},it.n)):_p.apply(this,arguments);};}
+
 /* sesiones sin bici */
 SESS.W={id:"W",name:"Cardio a pie",sub:"Caminata rápida + movilidad",dur:"45-60 min",rest:60,kind:"fuerza",sh:"Pie",items:[["caminata",1,"40-50 min a paso rápido"],["movilidad",1,"10 min"]],str:STR.S.slice(),warm:[]};
 SESS.Y={id:"Y",name:"HIIT sin material",sub:"Intervalos con tu cuerpo",dur:"30 min",kind:"circuito",sh:"HIIT",items:[["burpee",5,"30 s"],["sentsalto",5,"30 s"],["mountain",5,"30 s"],["rodillas",5,"30 s"],["plancha",5,"30 s"]],str:STR.H.slice(),warm:WARM.C.slice()};
