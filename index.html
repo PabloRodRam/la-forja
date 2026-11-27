@@ -161,6 +161,53 @@ h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;letter-spacing:.0
 .timer .ctl button{background:rgba(127,127,127,.25);border:0;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;color:inherit}
 .timer .tbar{grid-column:1/-1;height:4px;border-radius:99px;background:rgba(127,127,127,.3);overflow:hidden}
 .timer .tbar i{display:block;height:100%;background:var(--xp)}
+.timer .in>:first-child{min-width:0}
+.timer .lbl{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.25}
+.timer .sub{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.timer .clock{white-space:nowrap;justify-self:end}
+.timer .ctl{flex-wrap:wrap}
+.timer .ctl button{flex:1 1 auto;min-width:0}
+body.t90on .wrap{padding-bottom:230px}
+.mat90{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;margin-top:4px;font-size:11px;color:var(--muted)}
+.mat90 .ml{font-weight:700}
+.mat90 .m90{background:var(--surface2);color:var(--ink);border-radius:99px;padding:2px 8px;font-weight:600}
+.mat90 .m90.none{background:transparent;border:1px dashed var(--line);color:var(--muted)}
+.mat90 .mo{flex-basis:100%}
+.mat90.big{font-size:13px;margin:0}
+.mat90.big .m90{padding:4px 10px}
+.mat90s{font-size:13px;background:var(--surface2);border-radius:12px;padding:10px 12px;line-height:1.45}
+.how.rpb{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.btn.rptut{display:flex;flex-direction:column;align-items:center;gap:2px;width:100%;padding:12px;border:0;border-radius:12px;background:var(--accent);color:var(--accent-ink);font-weight:800;font-size:15px}
+.btn.rptut span{font-size:11px;font-weight:600;opacity:.85}
+.ov.rp90{align-items:stretch;justify-content:center;background:var(--bg);z-index:40}
+.rp90 .rpin{flex:1 1 auto;min-width:0;box-sizing:border-box;width:100%;max-width:520px;margin:0 auto;height:100%;overflow-y:auto;padding:max(12px,env(safe-area-inset-top,0px)) 16px max(16px,env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
+.rp90 header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.rp90 header h3{margin:2px 0 0;font-size:20px}
+.rp90 .close{flex:none;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:22px}
+.rp90 .rpstage{position:relative;min-width:0;flex:none;background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.rp90 .rpstage canvas,.rp90 .rpstage svg{display:block;width:min(100%,calc(46vh * 110 / 106));height:auto;aspect-ratio:110/106;margin:0 auto}
+.rp90 .rpph{position:absolute;left:10px;top:10px;font-size:12px;font-weight:700;background:var(--bg);border:1px solid var(--line);border-radius:99px;padding:4px 10px}
+.rp90 .rpcount{display:flex;align-items:center;justify-content:center;gap:18px}
+.rp90 .rpcount>div{text-align:center;min-width:120px}
+.rp90 .rpcount b{display:block;font-family:var(--display);font-size:64px;line-height:1;font-variant-numeric:tabular-nums}
+.rp90 .rpcount span{font-size:13px;color:var(--muted)}
+.rp90.goal .rpcount b{color:var(--xp)}
+.rp90 .rpadj{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:24px;font-weight:700}
+.rp90 .rpbar{height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.rp90 .rpbar i{display:block;height:100%;width:0;background:var(--xp);transition:width .3s}
+.rp90 .rpcue{font-size:14px;line-height:1.4}
+.rp90 .rpopts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.rp90 .rpseg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.rp90 .rpseg button,.rp90 .rpv{border:0;background:var(--surface);color:var(--ink);padding:8px 12px;font-size:13px;font-weight:700}
+.rp90 .rpseg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.rp90 .rpv{border:1px solid var(--line);border-radius:10px}
+.rp90 .rpv[aria-pressed="false"]{opacity:.6}
+.rp90 .rpgo{display:grid;grid-template-columns:1fr 2fr;gap:8px}
+.rp90 .rpgo button{border:0;border-radius:12px;padding:14px;font-size:16px;font-weight:800}
+.rp90 .rppause{background:var(--surface);color:var(--ink);border:1px solid var(--line)!important}
+.rp90 .rpdone{background:var(--accent);color:var(--accent-ink)}
+.rp90 .rpsteps summary{font-weight:700;cursor:pointer}
+.rp90 .rpsteps ol{margin:8px 0 0;padding-left:20px;font-size:14px;line-height:1.45}
 
 /* Modal tutorial */
 .ov{position:fixed;inset:0;z-index:40;background:rgba(8,12,22,.55);display:flex;align-items:flex-end;justify-content:center}
@@ -3956,6 +4003,183 @@ function propSvg81(id,label){const it=itemById(id)||{},c=it.v||"#3A4150",lt=mix8
   return _z(slot,svg);};}
 {const _p=itemPv;itemPv=function(it){return it&&it.slot&&/^(prop|shoes|skin|head|face|acc)$/.test(it.slot)?zoom28(it.slot,avatarSvg({[it.slot]:it.id},it.n)):_p.apply(this,arguments);};}
 
+/* v90 (1.9.0): muñecos corregidos para que sigan los pasos */
+Object.assign(EX.fondos,{
+  A:{h:[45,42],s:[42,52],e:[38,62],w:[33,72],p:[46,76],k:[66,77],f:[74,95]},
+  B:{h:[46,52],s:[42,62],e:[30,62],w:[33,72],p:[46,86],k:[66,77],f:[74,95]}});
+Object.assign(EX["est-nino"],{
+  A:{h:[65,92],s:[56,90],e:[67,93],w:[79,94],p:[33,82],k:[53,93],f:[32,95]},
+  B:{h:[66,92],s:[57,90],e:[68,93],w:[80,94],p:[32,83],k:[53,93],f:[32,95]}});
+Object.assign(EX.remoapoyado,{n:"Remo invertido bajo una mesa",prop:undefined,scene:"table",
+  A:{h:[50,82],s:[40,84],e:[40,72.5],w:[40,61],p:[17,88],k:[-2,79],f:[11.6,95]},
+  B:{h:[46,66],s:[36,69],e:[27,71],w:[39,61],p:[14,75],k:[-4,82],f:[11.6,95]},
+  steps:["Túmbate boca arriba bajo una mesa robusta y agarra el borde con las manos a la anchura de los hombros.","Rodillas dobladas y pies apoyados; cuerpo recto de rodillas a cabeza.","Tira llevando el pecho hacia el borde de la mesa y juntando los omóplatos.","Baja despacio hasta estirar los brazos."],
+  cue:"Cuerpo recto y pecho hacia la mesa."});
+delete EX.remoapoyado.prop;
+if(X3["est-nino"])X3["est-nino"].view={az:10,el:10};
+X3.remoapoyado={view:{az:8,el:4}};X3.fondos={view:{az:16,el:8}};
+{const _g=gym3_26;gym3_26=function(o){const r=_g.apply(this,arguments);if(o.sc==="table"){const R2=o.R2;R2(36,57,50,4,17);for(const z of [-14,14]){R2(38,61,3,34,1.4,0,z);R2(81,61,3,34,1.4,0,z);}}return r;};}
+{const _s=scene26Svg;scene26Svg=function(sc){if(sc==="table")return `<rect class="obj" x="36" y="57" width="50" height="4" rx="1"/><rect class="obj" x="38" y="61" width="3" height="34"/><rect class="obj" x="81" y="61" width="3" height="34"/>`;return _s.apply(this,arguments);};}
+/* v90: la explicación por voz manda sobre el temporizador */
+const VB90={t0:0,est:0,tts:false};
+function speaking90(){const now=Date.now();if(!VB90.t0)return false;
+  if(now-VB90.t0<700)return true;                       // la voz tarda un poco en arrancar
+  if(now-VB90.t0>VB90.est*2+6000)return false;          // por si algún motor no avisa al terminar
+  try{if(window.AndroidTTS&&AndroidTTS.speaking)return !!AndroidTTS.speaking();}catch(e){}
+  if(TTS)return VB90.tts;
+  try{if(typeof speechSynthesis!=="undefined")return speechSynthesis.speaking||speechSynthesis.pending;}catch(e){}
+  return now-VB90.t0<VB90.est;}
+const LOW90=/^(¡Ya! )?(Uno|Dos|Tres|Quedan diez segundos|¡Vamos!|¡Dale!|¡Otro lado!|Mantén\.?( Respira lento\.)?)$/;
+say=function(t){
+  if(!t||!voiceOn()||!canVoice())return;
+  if(VB90.mute)return;
+  if(LOW90.test(t)&&speaking90())return;                 // los avisos cortos no pisan una explicación
+  const my=VB90.t0=Date.now();VB90.est=600+String(t).length*80;
+  if(TTS){VB90.tts=true;try{TTS.speak(t,{language:"es-ES"}).then(()=>{if(VB90.t0===my)VB90.tts=false;},e=>{if(VB90.t0===my)VB90.tts=false;const c=e&&e.code;if(c==="not_granted"){voiceDenied=true;TTS=null;updVoiceBtn();}});}catch(e){VB90.tts=false;}return;}
+  sysSay(t);
+};
+{const _h=hush;hush=function(){VB90.t0=0;VB90.tts=false;return _h.apply(this,arguments);};}
+/* El aviso de "Prepárate" (y los cambios) esperan a que termine la explicación */
+{const _t=tickTimer;tickTimer=function(){
+  if(T&&!T.paused){const s=T.segs[T.i],now=Date.now();
+    if(s&&!s.work&&T.end>now-1500&&T.end-now<3400&&speaking90()){T.end=now+3400;nat90(true);}}
+  return _t.apply(this,arguments);};}
+/* Si el móvil congeló el reloj (otra app, pantalla apagada), recupera el tiempo real al volver */
+{const _b=beginSeg;beginSeg=function(){
+  const prev=T&&T.end,now=Date.now(),s=T&&T.segs[T.i];
+  const late=prev&&s&&now-prev>1500;
+  if(late&&prev+s.secs*1000<now)VB90.mute=true;          // segmentos que ya pasaron: sin voz atropellada
+  try{_b.apply(this,arguments);}finally{VB90.mute=false;}
+  if(late&&T)T.end=prev+s.secs*1000;
+  nat90();};}
+{const _s=stopTimer;stopTimer=function(){const had=!!T;const r=_s.apply(this,arguments);if(had){nat90();document.body.classList.remove("t90on");}return r;};}
+{const _st=startTimer;startTimer=function(){const r=_st.apply(this,arguments);document.body.classList.toggle("t90on",!!T);return r;};}
+let NAT90=0;
+function nat90(soft){const A=AND();if(!A||!A.timerSeg)return;
+  try{if(!T){A.timerStop&&A.timerStop();NAT90=0;return;}
+    const now=Date.now();if(soft&&now-NAT90<1500)return;NAT90=now;
+    const s=T.segs[T.i];A.timerSeg(String(s.lbl||"Temporizador"),String(s.sub||""),String(Math.round(T.paused?0:T.end)),!!T.paused);}catch(e){}}
+document.getElementById("tPause").addEventListener("click",()=>setTimeout(()=>nat90(),0));
+window.timerBack90=()=>{if(T){tickTimer();nat90();}};
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&T)tickTimer();});
+
+/* v90: calentamiento y estiramientos guiados siguen por el primero sin marcar */
+function pend90(ids,st){const p=ids.filter(id=>!st[id]);return p.length?p:ids;}
+warmSegs=function(k){const ss=sessFor(k);const w=ss.warm||[];const st=((S.days[k]||{}).warm)||{};const segs=[];
+  pend90(w,st).forEach(id=>{const i=w.indexOf(id);const ex=EX[id];const two=/por (lado|pierna|brazo)/.test(ex.t||"");const secs=parseInt(ex.t)||30;
+    segs.push({lbl:"Prepárate: "+ex.n,sub:`Calentamiento ${i+1} de ${w.length}`,secs:6,say:ex.n+". "+(ex.cue||"")});
+    if(two){segs.push({lbl:ex.n,sub:"Primer lado",secs,work:true,say:"¡Vamos!"});segs.push({lbl:"Cambia de lado",sub:ex.n,secs:4,say:"Cambia de lado."});
+      segs.push({lbl:ex.n,sub:"Segundo lado",secs,work:true,say:"¡Vamos!",onEnd:()=>markWarm(k,id,true)});}
+    else segs.push({lbl:ex.n,sub:"Suave al principio, cada vez más vivo",secs,work:true,say:"¡Vamos!",onEnd:()=>markWarm(k,id,true)});});
+  return segs;};
+strSegs=function(k){const ss=sessFor(k);const all=ss.str||[];const st=((S.days[k]||{}).str)||{};const segs=[];
+  pend90(all,st).forEach(id=>{const i=all.indexOf(id);const ex=EX[id];const two=/por (lado|pierna|brazo)/.test(ex.t||"");const secs=parseInt(ex.t)||30;
+    segs.push({lbl:"Prepárate: "+ex.n,sub:`Estiramiento ${i+1} de ${all.length}`,secs:8,say:ex.n+". "+(ex.cue||"")});
+    if(two){segs.push({lbl:ex.n,sub:"Primer lado · respira lento",secs,work:true,say:"Mantén. Respira lento."});
+      segs.push({lbl:"Cambia de lado",sub:ex.n,secs:5,say:"Cambia de lado."});
+      segs.push({lbl:ex.n,sub:"Segundo lado · respira lento",secs,work:true,say:"Mantén.",onEnd:()=>markStr(k,id,true)});}
+    else segs.push({lbl:ex.n,sub:"Mantén · respira lento",secs,work:true,say:"Mantén. Respira lento.",onEnd:()=>markStr(k,id,true)});});
+  return segs;};
+{const resume=(ids,st,what)=>{const n=ids.filter(id=>st[id]).length;if(n&&n<ids.length)toast(`Sigues por donde lo dejaste: quedan ${ids.length-n} ${what}`);};
+  const _w=warmTimer;warmTimer=function(k){const ss=sessFor(k);resume(ss.warm||[],((S.days[k]||{}).warm)||{},"ejercicios");return _w.apply(this,arguments);};
+  const _s=stretchTimer;stretchTimer=function(k){const ss=sessFor(k);resume(ss.str||[],((S.days[k]||{}).str)||{},"estiramientos");return _s.apply(this,arguments);};}
+/* v90: modo «Comenzar repeticiones»: el muñeco hace las reps contigo */
+const TEMPO90=[["lento","Lento",4200],["normal","Normal",3000],["vivo","Vivo",2100]];
+function tempo90(){try{return localStorage.getItem("pq.tempo90")||"normal";}catch(e){return "normal";}}
+function repsVoice90(){try{return localStorage.getItem("pq.rv90")!=="0";}catch(e){return true;}}
+function canReps90(k,id){const ss=sessFor(k);if(ss.kind!=="fuerza")return null;const it=ss.items.find(x=>x[0]===id);if(!it)return null;
+  const ex=EX[id];if(!ex||ex.bike||ex.cardio||ex.str||secsOf25(it[2]))return null;const inf=repInfo(it[2]);if(!inf)return null;
+  const a=((S.days[k]||{}).sets||{})[id]||[];let i=-1;for(let j=0;j<it[1];j++)if(!a[j]){i=j;break;}
+  return {it,inf,i,n:it[1]};}
+function repsMode90(k,id){
+  const info=canReps90(k,id);const ex=EX[id];if(!info)return;
+  if(info.i<0){toast("Ya has hecho todas las series de este ejercicio");return;}
+  try{document.querySelectorAll(".ov").forEach(o=>{const c=o.querySelector(".close");if(c)c.click();else o.remove();});}catch(e){}
+  if(T)stopTimer();
+  const lk=lookOf(),{inf,i,n}=info,goal=inf.hi||inf.lo||10,two=sides25(info.it[2]);
+  const ov=document.createElement("div");ov.className="ov rp90";ov.setAttribute("role","dialog");ov.setAttribute("aria-modal","true");ov.setAttribute("aria-label","Repeticiones: "+ex.n);
+  ov.innerHTML=`<div class="rpin">
+    <header><div style="min-width:0"><div class="eyebrow">Serie ${i+1} de ${n} · objetivo ${info.it[2]}</div><h3>${ex.n}</h3></div><button class="close" type="button" aria-label="Cerrar">×</button></header>
+    <div class="rpstage">${gl3()?`<canvas class="fig3c" id="rp3" role="img" aria-label="${ex.n}: el muñeco hace las repeticiones al ritmo elegido"></canvas>`:`<svg viewBox="-5 -8 110 106" role="img" aria-label="${ex.n}: animación">${FIG_STYLE}<g id="rpg"></g></svg>`}
+      <div class="rpph" id="rpph">Prepárate</div></div>
+    <div class="rpcount"><button type="button" class="rpadj" data-rpd="-1" aria-label="Una repetición menos">−</button><div><b id="rpn">0</b><span>de ${goal}${two?" por lado":""}</span></div><button type="button" class="rpadj" data-rpd="1" aria-label="Una repetición más">+</button></div>
+    <div class="rpbar"><i id="rpbar"></i></div>
+    <div class="rpcue"><b>Clave:</b> ${ex.cue||ex.tip||""}</div>
+    <div class="rpopts"><div class="rpseg" role="group" aria-label="Ritmo">${TEMPO90.map(([v,l])=>`<button type="button" data-rpt="${v}" aria-pressed="${v===tempo90()}">${l}</button>`).join("")}</div>
+      <button type="button" class="rpv" aria-pressed="${repsVoice90()}">${repsVoice90()?"Contar en voz alta":"Sin voz"}</button></div>
+    <div class="rpgo"><button type="button" class="rppause">Pausa</button><button type="button" class="rpdone">✓ Serie hecha</button></div>
+    <details class="rpsteps"><summary>Paso a paso</summary><ol>${ex.steps.map(s=>`<li>${s}</li>`).join("")}</ol></details>
+  </div>`;
+  document.body.appendChild(ov);
+  const $=s=>ov.querySelector(s),cv=$("#rp3"),g=$("#rpg"),ph=$("#rpph"),nEl=$("#rpn"),bar=$("#rpbar");
+  const v3=view3(ex),lp=loop3(ex),reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let cnt=0,paused=false,raf=0,last=performance.now(),clock=-3000,lastC=-4,wk=null,closed=false;
+  const draw=t=>{if(cv)paint3(cv,ex,t,v3,lk);else if(g)g.innerHTML=figure(ex,t,lk);};
+  const show=()=>{nEl.textContent=cnt;bar.style.width=Math.min(100,100*cnt/goal)+"%";ov.classList.toggle("goal",cnt>=goal);};
+  const per=()=>(TEMPO90.find(x=>x[0]===tempo90())||TEMPO90[1])[2]*(lp?2:1);
+  const rv=t=>{if(repsVoice90())say(t);};
+  rv(`${ex.n}. Serie ${i+1}. ${ex.cue||""}`);
+  if(cv){let dx=null,a0=0;cv.addEventListener("pointerdown",e=>{dx=e.clientX;a0=v3.az;try{cv.setPointerCapture(e.pointerId);}catch(_){}});cv.addEventListener("pointermove",e=>{if(dx!==null)v3.az=a0-(e.clientX-dx)*.6;});const up=()=>{dx=null;};cv.addEventListener("pointerup",up);cv.addEventListener("pointercancel",up);}
+  const tick=now=>{if(closed)return;const dt=now-last;last=now;if(!paused)clock+=dt;
+    if(clock>-400&&clock<0&&speaking90())clock=-400;          /* la explicación inicial termina antes de empezar */
+    if(clock<0){const c=Math.ceil(-clock/1000);if(c!==-lastC&&c<=3){lastC=-c;ph.textContent="Empieza en "+c;}draw(0);}
+    else{const P=per(),k=Math.floor(clock/P),f=(clock%P)/P;
+      if(k!==lastC){if(lastC>=0&&k>lastC){cnt++;show();if(cnt===goal)rv(`${cnt}. ¡Objetivo cumplido!`);else rv(String(cnt));}else if(lastC<0)rv("¡Vamos!");lastC=k;}
+      let t,l;if(lp){t=f;l=f<.5?lp[0]:lp[1];}
+      else if(f<.4){t=ease(f/.4);l="Movimiento controlado";}else if(f<.5){t=1;l="Aguanta un instante";}else if(f<.9){t=1-ease((f-.5)/.4);l="Vuelve despacio";}else{t=0;l="Posición inicial";}
+      draw(t);if(!paused)ph.textContent=l;}
+    raf=requestAnimationFrame(tick);};
+  if(reduce){clock=0;draw(1);ph.textContent="Usa + para contar cada repetición";}else raf=requestAnimationFrame(tick);
+  try{navigator.wakeLock&&navigator.wakeLock.request("screen").then(w=>{wk=w;}).catch(()=>{});}catch(e){}
+  const close=()=>{closed=true;cancelAnimationFrame(raf);try{wk&&wk.release();}catch(e){}ov.remove();document.removeEventListener("keydown",esc);hush();};
+  const esc=e=>{if(e.key==="Escape")close();};document.addEventListener("keydown",esc);
+  $(".close").onclick=close;$(".close").focus();
+  ov.querySelectorAll("[data-rpd]").forEach(b=>b.onclick=()=>{cnt=Math.max(0,cnt+ +b.dataset.rpd);show();});
+  ov.querySelectorAll("[data-rpt]").forEach(b=>b.onclick=()=>{const old=per(),f=clock>0?(clock%old)/old:0;
+    try{localStorage.setItem("pq.tempo90",b.dataset.rpt);}catch(e){}ov.querySelectorAll("[data-rpt]").forEach(x=>x.setAttribute("aria-pressed",x===b));
+    if(clock>0){const P=per();clock=(lastC+f)*P;}});
+  $(".rpv").onclick=e=>{const on=!repsVoice90();try{localStorage.setItem("pq.rv90",on?"1":"0");}catch(_){}e.target.setAttribute("aria-pressed",on);e.target.textContent=on?"Contar en voz alta":"Sin voz";if(!on)hush();};
+  $(".rppause").onclick=e=>{paused=!paused;e.target.textContent=paused?"Seguir":"Pausa";if(paused)ph.textContent="En pausa";};
+  $(".rpdone").onclick=()=>{close();if(cnt>0)setRep(k,id,i,String(cnt));markSet(k,id,i,true);
+    const nx=canReps90(k,id);toast(nx&&nx.i>=0?`Serie hecha: ${cnt} reps. Al acabar el descanso, vuelve a «Comenzar reps».`:`Serie hecha: ${cnt} reps.`);};
+}
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-rp90]");if(!b)return;e.preventDefault();repsMode90(b.dataset.rpk||sel,b.dataset.rp90);});
+/* botón también dentro del tutorial si el ejercicio está en la sesión del día */
+{const _o=openTut;openTut=function(id){const r=_o.apply(this,arguments);try{const info=canReps90(sel,id);const ov=[...document.querySelectorAll(".ov")].pop();
+    if(info&&info.i>=0&&ov&&!ov.querySelector("[data-rp90]")){const top=ov.querySelector(".tut-top");const d=document.createElement("button");d.type="button";d.className="btn rptut";d.dataset.rp90=id;
+      d.innerHTML=`▶ Comenzar repeticiones <span>serie ${info.i+1} de ${info.n} · el muñeco las hace contigo</span>`;top&&top.after(d);}}catch(e){}return r;};}
+/* v90: material de cada ejercicio (alternativas válidas, cosas de casa y material opcional) */
+const EQOR90={goblet:[["kb","db"]],rumano:[["bar","db"]],remo1:[["db","kb"],["bench","chair"]],bulgara:[["chair","bench"]],negativas:[["pull"],["chair","bench"]]};
+const HOME90={remoapoyado:["Mesa robusta"],"est-gemelo":["Pared"],"est-pecho":["Pared o marco de puerta"],sentpared:["Pared"],"g-remo":["Puerta o poste para anclar la goma"],
+  "bar-hipthrust":["Toalla para la cadera"],"est-cadera":["Toalla o cojín bajo la rodilla"]};
+const OPT90={"est-isquio":["toalla si no llegas"],"est-cuad":["pared o silla para apoyarte"],"cal-balanceo":["pared o silla para apoyarte"],gemelos:["pared para apoyarte","escalón para más recorrido"],
+  dominadas:["goma de ayuda si aún no te salen"],"kb-remo":["silla para apoyar la mano"],"bar-hipthrust":["banco para la espalda"],bulgara:["mancuernas para más carga"],inclinado:["pared detrás para no resbalar"]};
+{const _n=needs;needs=function(id){const g=EQOR90[id];if(!g)return _n.apply(this,arguments);
+  let mine=[];try{mine=myGear();}catch(e){}return g.map(alts=>alts.find(a=>mine.includes(a))||alts[0]);};}
+const EQLBL90={remo1:["Mancuernas o pesa rusa","Banco, silla o escalón"],bulgara:["Silla, banco o escalón"],negativas:["Barra de dominadas","Silla o banco para subir"]};
+const MAT90=new Set(["mountain","birddog","cal-gato","puentepc","puente","g-puente","g-patada","pike","rodillas","bar-hipthrust","planchalat","plancha"]);
+const gearN90=g=>{const x=GEAR.find(y=>y[0]===g);return x?x[1]:({cable:"Polea",machine:"Máquina"}[g]||g);};
+function floor90(ex){const P=[ex.A,ex.B].filter(Boolean);return P.length&&P.every(p=>p.p&&p.p[1]>=78&&p.h&&p.h[1]>=60);}
+function mat90(id){const ex=EX[id];if(!ex||ex.bike||/^nat-/.test(id))return null;
+  const need=EQLBL90[id]?EQLBL90[id].slice():EQOR90[id]?EQOR90[id].map(a=>a.map((g,i)=>i?gearN90(g).toLowerCase():gearN90(g)).join(" o ")):needs(id).map(gearN90);
+  const home=(HOME90[id]||[]).slice(),opt=(OPT90[id]||[]).slice();
+  if((MAT90.has(id)||floor90(ex))&&!need.some(n=>/Banco|Máquina/.test(n)))opt.push("esterilla");
+  return {need,home,opt};}
+function mat90Html(id,big){const m=mat90(id);if(!m)return "";const req=[...m.need,...m.home];
+  const main=req.length?req.map(x=>`<span class="m90">${esc80(x)}</span>`).join(""):`<span class="m90 none">Sin material</span>`;
+  return `<div class="mat90${big?" big":""}"><span class="ml">Material:</span>${main}${m.opt.length?`<span class="mo">Opcional: ${esc80(m.opt.join(", "))}</span>`:""}</div>`;}
+/* resumen del material de la sesión del día, encima de los ejercicios */
+function dayMat90(k){const ss=sessFor(k);const ids=[...(ss.warm||[]),...ss.items.map(x=>x[0]),...(ss.str||[])];const set=new Map();
+  for(const id of ids){const m=mat90(id);if(!m)continue;[...m.need,...m.home].forEach(x=>set.set(x,(set.get(x)||0)+1));}
+  return [...set.keys()];}
+{const _b=bind;bind=function(){const r=_b.apply(this,arguments);try{
+  if(tab==="hoy"){const v=document.getElementById("view");const first=v&&v.querySelector(".ex");
+    if(first&&!v.querySelector(".mat90s")){const ss=sessFor(sel);if(["fuerza","circuito","hiit"].includes(ss.kind)){const L=dayMat90(sel);const d=document.createElement("div");d.className="mat90s";
+      d.innerHTML=`<b>Material para hoy:</b> ${L.length?L.map(esc80).join(" · "):"nada, solo tu cuerpo"}`;first.before(d);}}}}catch(e){}return r;};}
+{const _o=openTut;openTut=function(id){const r=_o.apply(this,arguments);try{const ov=[...document.querySelectorAll(".ov")].pop();const ch=ov&&ov.querySelector(".chips");
+  if(ch&&!ov.querySelector(".mat90")){const d=document.createElement("div");d.innerHTML=mat90Html(id,true);if(d.firstElementChild)ch.after(d.firstElementChild);}}catch(e){}return r;};}
+EX.inclinado.n="Flexiones con pies elevados";
+
 /* sesiones sin bici */
 SESS.W={id:"W",name:"Cardio a pie",sub:"Caminata rápida + movilidad",dur:"45-60 min",rest:60,kind:"fuerza",sh:"Pie",items:[["caminata",1,"40-50 min a paso rápido"],["movilidad",1,"10 min"]],str:STR.S.slice(),warm:[]};
 SESS.Y={id:"Y",name:"HIIT sin material",sub:"Intervalos con tu cuerpo",dur:"30 min",kind:"circuito",sh:"HIIT",items:[["burpee",5,"30 s"],["sentsalto",5,"30 s"],["mountain",5,"30 s"],["rodillas",5,"30 s"],["plancha",5,"30 s"]],str:STR.H.slice(),warm:WARM.C.slice()};
@@ -4349,8 +4573,8 @@ function viewHoy(c){
     const inf=ss.kind==="fuerza"&&!ex.bike&&!ex.cardio?repInfo(reps):null;let repsRow="",sg="";
     if(inf){const rp=(r.reps||{})[id]||[];let ins="";for(let i=0;i<nS;i++)ins+=`<input inputmode="numeric" data-rep="${id}" data-i="${i}" value="${rp[i]||""}" placeholder="${inf.hi||""}" aria-label="Repeticiones de ${ex.n}, serie ${i+1}">`;
       repsRow=`<div class="repsrow">${ins}<span>reps hechas${inf.hi?" (vacío = "+inf.hi+")":""}</span></div>`;sg=suggestion(id,sel,reps);}
-    return `<div class="ex${full?" complete":""}"><button type="button" class="thumb" data-tut="${id}" aria-label="Músculos de ${ex.n}">${anatomySvg(id,true)}</button><div class="info"><div class="title">${ex.n} ${rk?`<span class="medal ${MEDALS[rk][0]}">${MEDALS[rk][0]}</span>`:""}</div><div class="reps">${nS>1?nS+" × ":""}${reps}</div>${swInfo}${pzInfo}</div>
-      <div class="exb">${ss.kind==="fuerza"&&!full&&secsOf25(reps)?`<button class="how wtb" type="button" data-wt="${id}" aria-label="Cronómetro para ${ex.n}: ${reps}">⏱ ${reps}</button>`:""}<button class="how" type="button" data-tut="${id}">${icons.play} Cómo se hace</button>${swb}${tool27(id)}</div>
+    return `<div class="ex${full?" complete":""}"><button type="button" class="thumb" data-tut="${id}" aria-label="Músculos de ${ex.n}">${anatomySvg(id,true)}</button><div class="info"><div class="title">${ex.n} ${rk?`<span class="medal ${MEDALS[rk][0]}">${MEDALS[rk][0]}</span>`:""}</div><div class="reps">${nS>1?nS+" × ":""}${reps}</div>${swInfo}${pzInfo}${mat90Html(id)}</div>
+      <div class="exb">${ss.kind==="fuerza"&&!full&&secsOf25(reps)?`<button class="how wtb" type="button" data-wt="${id}" aria-label="Cronómetro para ${ex.n}: ${reps}">⏱ ${reps}</button>`:""}${inf&&!full&&!secsOf25(reps)?`<button class="how rpb" type="button" data-rp90="${id}" aria-label="Comenzar repeticiones de ${ex.n} con el muñeco">▶ Comenzar reps</button>`:""}<button class="how" type="button" data-tut="${id}">${icons.play} Cómo se hace</button>${swb}${tool27(id)}</div>
       <div class="sets">${dots}${kg}</div>${repsRow}${sg}${warm27(id,sel,ss)}</div>`;}).join("");
   const canFinish=!done&&ss.kind!=="descanso"&&!(ss.mode==="pasos")&&(ss.kind==="deporte"?actMin(r)>=20:n>=Math.ceil(required(ss)*.5));
   const pid=planId(sel),tid=tplId(sel);
