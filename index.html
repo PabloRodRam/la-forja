@@ -4180,6 +4180,90 @@ function dayMat90(k){const ss=sessFor(k);const ids=[...(ss.warm||[]),...ss.items
   if(ch&&!ov.querySelector(".mat90")){const d=document.createElement("div");d.innerHTML=mat90Html(id,true);if(d.firstElementChild)ch.after(d.firstElementChild);}}catch(e){}return r;};}
 EX.inclinado.n="Flexiones con pies elevados";
 
+/* v91: mazmorra — «Ya la he hecho» visible, con confirmación y con opción de deshacer */
+(function(){const st=document.createElement("style");st.textContent=`
+.dung .btn.ghost{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.5)}
+.dung .btn.ghost.warn{background:#FFD25A;color:#1B1530;border-color:#FFD25A}
+.dung.done{grid-template-columns:52px 1fr}
+.dung.done .btn.ghost{background:var(--surface2);color:var(--ink);border:1px solid var(--line);margin-top:8px;padding:6px 12px;font-size:13px;min-height:0}
+.dung.done .btn.ghost.warn{background:#FFD25A;color:#1B1530;border-color:#FFD25A}`;try{document.head.appendChild(st);}catch(e){}})();
+{const _d=dungHtml;dungHtml=function(){let h=_d.apply(this,arguments);
+  if(/class="dung done"/.test(h))h=h.replace('<div class="small">El próximo sábado se abre otra.</div>','$&<button class="btn ghost" type="button" data-dgu>Deshacer: aún no la he hecho</button>');
+  return h;};}
+function dungUndo91(){const sat=satOf(TK);if(!sat||!S.dung||!S.dung[sat])return;delete S.dung[sat];if(S.opened)delete S.opened["dg:"+sat];save();render();
+  toast("Mazmorra desmarcada y botín retirado. Sigue abierta hasta el domingo.");}
+/* dos toques: el primero pide confirmación, el segundo actúa */
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-dgm],[data-dgu]");if(!b)return;
+  if(b.dataset.arm==="1"){if(b.hasAttribute("data-dgu")){e.stopImmediatePropagation();e.preventDefault();dungUndo91();}return;}
+  e.stopImmediatePropagation();e.preventDefault();const old=b.textContent;b.dataset.arm="1";b.classList.add("warn");
+  b.textContent=b.hasAttribute("data-dgm")?"¿Seguro? Toca otra vez para darla por hecha":"¿Seguro? Toca otra vez para deshacer";
+  setTimeout(()=>{if(b.isConnected){b.dataset.arm="";b.classList.remove("warn");b.textContent=old;}},4500);},true);
+
+/* v91: HIIT en bici — pasos completos, guía por voz con resistencia y cadencia, y core guiado */
+Object.assign(EX.calentamiento,{steps:[
+  "Ajusta el sillín: con el pedal abajo del todo, la rodilla queda casi estirada (un poco flexionada).",
+  "Minutos 0-2: resistencia baja, unas 80 rpm, respiración tranquila.",
+  "Minutos 2-4: sube un punto la resistencia. Tienes que poder hablar con frases cortas (esfuerzo 4-5 de 10).",
+  "Último minuto: dos acelerones de 10 s a ritmo vivo y vuelve a suave.",
+  "Ten a mano agua y una toalla."],
+  err:["Empezar ya fuerte: los sprints salen peor y cargas las rodillas.","Sillín demasiado bajo: la rodilla sufre en cada pedalada."],
+  tip:"El temporizador guiado te dice cuándo subir la resistencia."});
+Object.assign(EX.sprint,{steps:[
+  "Antes de cada sprint sube la resistencia a media-alta: que cueste, pero que puedas pedalear rápido (100 rpm o más).",
+  "30 s a tope (esfuerzo 9 de 10): sentado, tronco firme y abdomen apretado, sin botar en el sillín.",
+  "Al pitido, baja la resistencia casi del todo y pedalea muy suave 60 s (60-70 rpm), respirando hondo.",
+  "Haz 10 rondas. Si en la última aún aguantas el ritmo, la próxima vez haz 12.",
+  "Si te mareas o notas dolor en el pecho, para y pedalea muy suave."],
+  err:["Poner tan poca resistencia que las piernas giran solas y botas en el sillín.","Recuperar demasiado fuerte y no llegar a tope al siguiente sprint.","Agarrar el manillar con los brazos tensos y los hombros encogidos."],
+  tip:"Semanas 3-4: intenta añadir una ronda. Si es bici de calle, hazlo en una recta sin tráfico o en una cuesta suave."});
+Object.assign(EX.calma,{steps:[
+  "Baja la resistencia al mínimo y pedalea muy suave 5 minutos.",
+  "Respira por la nariz y alarga la espiración para que bajen las pulsaciones.",
+  "No te bajes de golpe después del último sprint: puedes marearte.",
+  "Bebe agua y sécate antes del core."],
+  err:["Parar en seco nada más acabar el último sprint."],tip:"Cuando puedas hablar con normalidad, ya estás listo para el core."});
+Object.assign(EX.core,{steps:[
+  "Sobre la esterilla, 3 vueltas con el temporizador guiado (unos 11 minutos):",
+  "Plancha, 40 s: codos bajo los hombros y el cuerpo recto. Aprieta glúteos y abdomen.",
+  "Bicho muerto, 40 s: boca arriba con la zona lumbar pegada al suelo. Estira despacio el brazo y la pierna contrarios.",
+  "Plancha lateral, 30 s por lado: codo bajo el hombro y cadera alta, en línea con hombros y pies.",
+  "Tienes 15 s para cambiar de ejercicio y 1 minuto de descanso entre vueltas."],
+  err:["Dejar caer la cadera en la plancha.","Arquear la zona lumbar en el bicho muerto."],
+  tip:"Cada ejercicio tiene su propio tutorial con el muñeco: Plancha, Bicho muerto y Plancha lateral."});
+const CORE91=[["plancha",40,"","Plancha. Codos bajo los hombros, cuerpo recto, aprieta glúteos y abdomen."],
+  ["deadbug",40,"","Bicho muerto. Boca arriba, lumbar pegada al suelo, estira brazo y pierna contrarios despacio."],
+  ["planchalat",30,"lado derecho","Plancha lateral, lado derecho. Codo bajo el hombro, cadera alta."],
+  ["planchalat",30,"lado izquierdo","Cambia: lado izquierdo."]];
+function coreSegs91(k){const segs=[],NR=3;
+  for(let r=0;r<NR;r++){CORE91.forEach(([id,s,side,sy],i)=>{const n=EX[id].n+(side?" · "+side:"");
+      segs.push({lbl:"Prepárate: "+n,sub:`Core · vuelta ${r+1} de ${NR}`,secs:i===3?6:(r===0&&i===0?10:15),say:(i===0?`Vuelta ${r+1} de core. `:"")+(r===0?sy:n.replace(" · ",", ")+".")});
+      segs.push({lbl:n,sub:`Core · vuelta ${r+1} de ${NR}`,secs:s,work:true,say:"¡Vamos!",onEnd:r===NR-1&&i===CORE91.length-1?()=>markSet(k,"core",0,true,true):null});});
+    if(r<NR-1)segs.push({lbl:"Descanso",sub:"Un minuto · bebe agua",secs:60,say:"Un minuto de descanso."});}
+  return segs;}
+hiitTimer=function(k,rounds){const ss=sessFor(k),ex=!!ss.mode,r0=S.days[k]||{},segs=[];
+  const W=ex?[[60,"suave","Resistencia baja · unas 80 rpm","Calentamiento. Pedalea suave con resistencia baja."],
+              [90,"un poco más","Sube un punto · puedes hablar con frases cortas","Sube un punto la resistencia."],
+              [30,"acelerón","10 s a ritmo vivo y vuelve a suave","Un acelerón de diez segundos y vuelve a suave."]]
+            :[[120,"suave","Resistencia baja · unas 80 rpm","Calentamiento. Ajusta el sillín y pedalea suave con resistencia baja."],
+              [120,"un poco más","Sube un punto · puedes hablar con frases cortas","Sube un punto la resistencia. Tienes que poder hablar con frases cortas."],
+              [60,"dos acelerones","10 s a ritmo vivo, 20 s suave, dos veces","Dos acelerones de diez segundos, con veinte segundos suaves entre ellos."]];
+  W.forEach(([s,l,sub,sy],i)=>segs.push({lbl:"Calentamiento: "+l,sub,secs:s,say:sy,onEnd:i===W.length-1?()=>markSet(k,"calentamiento",0,true,true):null}));
+  for(let r=0;r<rounds;r++){
+    segs.push({lbl:"Sube la resistencia",sub:`Prepárate · ronda ${r+1} de ${rounds}`,secs:8,say:r===0?"Sube la resistencia a media alta. Sentado y con el tronco firme. Prepárate.":"Sube la resistencia. Prepárate."});
+    segs.push({lbl:"¡A tope!",sub:`Ronda ${r+1} de ${rounds} · 100+ rpm · esfuerzo 9 de 10`,secs:30,work:true,say:r===rounds-1?"Última ronda. ¡A tope!":`Ronda ${r+1}. ¡A tope!`,onEnd:()=>markSet(k,"sprint",r,true,true)});
+    segs.push({lbl:"Muy suave",sub:`Baja la resistencia · respira hondo · ronda ${r+1} de ${rounds}`,secs:r===rounds-1?60:52,say:"Baja la resistencia. Muy suave, respira hondo."});}
+  segs.push({lbl:"Vuelta a la calma",sub:"Resistencia mínima · deja que bajen las pulsaciones",secs:ex?120:300,say:ex?"Vuelta a la calma. Dos minutos muy suave.":"Vuelta a la calma. Cinco minutos muy suave, respirando por la nariz.",onEnd:()=>markSet(k,"calma",0,true,true)});
+  const core=!ex&&ss.items.some(x=>x[0]==="core")&&!((r0.sets||{}).core||[])[0];
+  if(core){segs.push({lbl:"Bájate de la bici",sub:"Agua, toalla y esterilla",secs:45,say:"Bájate de la bici, bebe agua y prepara la esterilla. Ahora, el core."});segs.push(...coreSegs91(k));}
+  startTimer(segs,ex?"Intervalos terminados. ¡Día salvado!":core?"HIIT y core terminados. Ahora, a estirar.":"Intervalos terminados. Ahora toca el core.");};
+/* botón para hacer solo el core guiado */
+{const _b=bind;bind=function(){const r=_b.apply(this,arguments);try{if(tab==="hoy"){const b12=document.querySelector('#view [data-act="hiit"][data-r="12"]');
+  if(b12&&!document.querySelector("[data-core91]")){const c=document.createElement("button");c.type="button";c.className="btn ghost";c.dataset.core91="1";c.innerHTML=`${icons.play} Solo core guiado`;b12.after(c);}}}catch(e){}return r;};}
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-core91]");if(!b)return;startTimer(coreSegs91(sel),"Core terminado. Ahora, a estirar.");});
+/* material: la bici también cuenta */
+{const _m=mat90;mat90=function(id){if(["calentamiento","sprint","calma","bicisuave"].includes(id))return {need:[gearN90("bike")],home:[],opt:id==="sprint"?["toalla y agua"]:[]};
+  if(id==="core")return {need:[],home:[],opt:["esterilla"]};return _m.apply(this,arguments);};}
+
 /* sesiones sin bici */
 SESS.W={id:"W",name:"Cardio a pie",sub:"Caminata rápida + movilidad",dur:"45-60 min",rest:60,kind:"fuerza",sh:"Pie",items:[["caminata",1,"40-50 min a paso rápido"],["movilidad",1,"10 min"]],str:STR.S.slice(),warm:[]};
 SESS.Y={id:"Y",name:"HIIT sin material",sub:"Intervalos con tu cuerpo",dur:"30 min",kind:"circuito",sh:"HIIT",items:[["burpee",5,"30 s"],["sentsalto",5,"30 s"],["mountain",5,"30 s"],["rodillas",5,"30 s"],["plancha",5,"30 s"]],str:STR.H.slice(),warm:WARM.C.slice()};
